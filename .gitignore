@@ -2,6 +2,7 @@
 /2.png
 /3.png
 /Homepage Portfolio TOFF.pdf
+/.idea/
 
 # dependencies
 /toff_frontend/node_modules/
@@ -28,4 +29,3 @@
 /toff_backend/node_modules/
 /toff_backend/.idea/
 /toff_frontend/.idea/
-/toff_frontend/node_modules/
