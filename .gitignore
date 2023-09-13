@@ -29,3 +29,5 @@
 /toff_backend/node_modules/
 /toff_backend/.idea/
 /toff_frontend/.idea/
+/toff_backend/.env
+/toff_frontend/.env
