@@ -1,0 +1,31 @@
+/1.png
+/2.png
+/3.png
+/Homepage Portfolio TOFF.pdf
+
+# dependencies
+/toff_frontend/node_modules/
+/toff_frontend/.pnp
+/toff_frontend/.pnp.js
+
+# testing
+/toff_frontend/coverage
+
+# production
+/toff_frontend/build
+
+# misc
+/toff_frontend/.DS_Store
+/toff_frontend/.env.local
+/toff_frontend/.env.development.local
+/toff_frontend/.env.test.local
+/toff_frontend/.env.production.local
+
+/toff_frontend/npm-debug.log*
+/toff_frontend/yarn-debug.log*
+/toff_frontend/yarn-error.log*
+
+/toff_backend/node_modules/
+/toff_backend/.idea/
+/toff_frontend/.idea/
+/toff_frontend/node_modules/
