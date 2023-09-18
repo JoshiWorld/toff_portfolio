@@ -1,11 +1,18 @@
 import React from 'react';
 import homeImage from '../Images/home.png';
+import Button from 'react-bootstrap/Button';
 
 function Home() {
-    const imageContainerStyle: React.CSSProperties = {
+    const containerStyle: React.CSSProperties = {
         maxWidth: '100%',
         height: 'auto',
         position: 'relative',
+    };
+
+    const imageStyle: React.CSSProperties = {
+        maxWidth: '100%',
+        width: 'auto',
+        zIndex: 1,
     };
 
     const gradientOverlayStyle: React.CSSProperties = {
@@ -15,21 +22,24 @@ function Home() {
         width: '100%',
         height: '10%', // Adjust the height to control the fading area
         background: 'linear-gradient(transparent, white)', // Create a gradient from transparent to white
-        pointerEvents: 'none', // Allow clicks to pass through the overlay
+        zIndex: 2, // Ensure the overlay is above the image
     };
 
-    const imageStyle: React.CSSProperties = {
-        maxWidth: '100%',
-        maxHeight: '100%',
-        width: 'auto',
-        height: 'auto',
-        zIndex: 1, // Ensure the image is above the gradient overlay
+    const buttonStyle: React.CSSProperties = {
+        position: 'absolute',
+        top: '50%', // Vertically center the button relative to the picture
+        left: '71%', // Adjust the left position as needed relative to the picture
+        transform: 'translate(-50%, -50%)', // Center the button
+        zIndex: 3, // Ensure the button is above the overlay
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     };
 
     return (
-        <div style={imageContainerStyle}>
-            <div style={gradientOverlayStyle}></div>
+        <div style={containerStyle}>
             <img src={homeImage} alt="TOFF Home Picture" style={imageStyle} />
+            <div style={gradientOverlayStyle}></div>
+
+            <Button variant="outline-light" style={buttonStyle}>JETZT HÖREN</Button>{' '}
         </div>
     );
 }
