@@ -9,12 +9,12 @@ function NavbarShared() {
             <Container>
                 <Navbar.Brand href="#home">
                     <img
-                        src="/img/logo.svg"
+                        src="/logo.svg"
                         width="30"
                         height="30"
                         className="d-inline-block align-top"
-                        alt="React Bootstrap logo"
-                    />
+                        alt="TOFF Logo"
+                    /> T O F F
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
@@ -22,8 +22,8 @@ function NavbarShared() {
                         <Nav.Link href="#home">Home</Nav.Link>
                         <Nav.Link href="#musik">Musik</Nav.Link>
                         <Nav.Link href="#live">Live</Nav.Link>
-                        <Nav.Link href="#live">Songanteile</Nav.Link>
-                        <Nav.Link href="#live">Kontakt</Nav.Link>
+                        <Nav.Link href="#songanteile">Songanteile</Nav.Link>
+                        <Nav.Link href="#kontakt">Kontakt</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
