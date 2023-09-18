@@ -2,14 +2,7 @@ import * as React from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import { Link } from 'react-router-dom';
-
-// @ts-ignore
-const CustomNavLink = ({ to, children }) => (
-    <Nav.Link as={Link} to={to}>
-        {children}
-    </Nav.Link>
-);
+import CustomNavLink from './CustomNavLink';
 
 function NavbarShared() {
     return (
