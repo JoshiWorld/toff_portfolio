@@ -6,7 +6,7 @@ import CustomNavLink from './CustomNavLink';
 
 function NavbarShared() {
     return (
-        <Navbar collapseOnSelect expand="md" bg="dark" variant="dark"> {/* Set bg to "dark" */}
+        <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
             <Container>
                 <Navbar.Brand href="#home">
                     <img

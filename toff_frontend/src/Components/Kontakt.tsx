@@ -19,9 +19,9 @@ function Kontakt() {
         bottom: 0,
         left: 0,
         width: '100%',
-        height: '10%', // Adjust the height to control the fading area
-        background: 'linear-gradient(transparent, white)', // Create a gradient from transparent to white
-        zIndex: 2, // Ensure the overlay is above the image
+        height: '10%',
+        background: 'linear-gradient(transparent, white)',
+        zIndex: 2,
     };
 
     return (
