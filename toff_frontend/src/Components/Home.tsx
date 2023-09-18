@@ -34,12 +34,19 @@ function Home() {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     };
 
+    const buttonStyleA: React.CSSProperties = {
+        textDecoration: 'none',
+        color: 'black',
+    }
+
     return (
         <div style={containerStyle}>
             <img src={homeImage} alt="TOFF Home Picture" style={imageStyle} />
             <div style={gradientOverlayStyle}></div>
 
-            <Button variant="outline-light" style={buttonStyle}>JETZT HÖREN</Button>{' '}
+            <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" style={buttonStyleA} >
+                <Button style={buttonStyle}>JETZT HÖREN</Button>
+            </a>
         </div>
     );
 }

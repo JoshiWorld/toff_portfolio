@@ -2,6 +2,14 @@ import * as React from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import { Link } from 'react-router-dom';
+
+// @ts-ignore
+const CustomNavLink = ({ to, children }) => (
+    <Nav.Link as={Link} to={to}>
+        {children}
+    </Nav.Link>
+);
 
 function NavbarShared() {
     return (
@@ -19,11 +27,11 @@ function NavbarShared() {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                     <Nav>
-                        <Nav.Link href="#home">Home</Nav.Link>
-                        <Nav.Link href="#musik">Musik</Nav.Link>
-                        <Nav.Link href="#live">Live</Nav.Link>
-                        <Nav.Link href="#songanteile">Songanteile</Nav.Link>
-                        <Nav.Link href="#kontakt">Kontakt</Nav.Link>
+                        <CustomNavLink to="/">Home</CustomNavLink>
+                        <CustomNavLink to="/musik">Musik</CustomNavLink>
+                        <CustomNavLink to="/live">Live</CustomNavLink>
+                        <CustomNavLink to="/songanteile">Songanteile</CustomNavLink>
+                        <CustomNavLink to="/kontakt">Kontakt</CustomNavLink>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
