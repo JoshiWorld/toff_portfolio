@@ -1,9 +1,13 @@
 import * as React from 'react';
 
 function FooterShared() {
+    const LinkStyle: React.CSSProperties = {
+        color: 'inherit'
+    }
+
     return(
       <div>
-          <a href="#impressum">Impressum</a>
+          <a href="#impressum" style={LinkStyle}>Impressum</a>
       </div>
     );
 }
