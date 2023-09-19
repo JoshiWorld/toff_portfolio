@@ -41,7 +41,7 @@ function Home() {
 
     return (
         <div style={containerStyle}>
-            <img src={homeImage} alt="TOFF Home Picture" style={imageStyle} />
+            <img src={homeImage} alt="TOFF Home" style={imageStyle} />
             <div style={gradientOverlayStyle}></div>
 
             <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" style={buttonStyleA} >

@@ -26,7 +26,7 @@ function Kontakt() {
 
     return (
         <div style={containerStyle}>
-            <img src={contactImage} alt="TOFF Contact Picture" style={imageStyle} />
+            <img src={contactImage} alt="TOFF Contact" style={imageStyle} />
             <div style={gradientOverlayStyle}></div>
         </div>
     );
