@@ -7,6 +7,7 @@ import Musik from './Components/Musik';
 import NoMatch from './Components/Shared/NoMatch';
 import Kontakt from './Components/Kontakt';
 import Live from './Components/Live';
+import Impressum from './Components/Impressum';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
               <Route path="/musik" element={<Musik />} />
               <Route path="/kontakt" element={<Kontakt />} />
               <Route path="/live" element={<Live />} />
+              <Route path="/impressum" element={<Impressum />} />
               <Route path="*" element={<NoMatch />} />
           </Routes>
           <FooterShared />
