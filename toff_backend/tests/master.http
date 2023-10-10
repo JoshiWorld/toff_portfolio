@@ -1,0 +1,17 @@
+POST http://localhost:3030/api/master/create
+Content-Type: application/json
+
+{
+  "user": {
+    "role": "admin",
+    "password": "Test123?"
+  }
+}
+
+###
+GET http://localhost:3030/api/master/
+Content-Type: application/json
+
+{
+  "password": "Test123?"
+}

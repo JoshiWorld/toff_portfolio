@@ -1,0 +1,15 @@
+GET http://localhost:3030/api/live
+
+###
+POST http://localhost:3030/api/live/create
+Content-Type: application/json
+
+{
+  "liveblog": {
+    "title": "Test",
+    "description": "Test Description",
+    "ticketLink": "LINK",
+    "imageSource": "IMGSOURCE"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiaWF0IjoxNjk2OTY1NDgzLCJleHAiOjE2OTk1NTc0ODN9.1dbD-ED5CMAWDfnShwaoBrx8hCsCen5jLb4sw8VD4K4"
+}
