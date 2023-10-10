@@ -32,6 +32,12 @@ function Home() {
         transform: 'translate(-50%, -50%)', // Center the button
         zIndex: 3, // Ensure the button is above the overlay
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        textDecoration: 'none',
+        padding: 0,
+        width: '13vw',
+        height: '5vw',
+        fontSize: '2vw',
+        whiteSpace: 'nowrap', // Prevent text from breaking into two lines
     };
 
     const buttonStyleA: React.CSSProperties = {
@@ -45,7 +51,7 @@ function Home() {
             <div style={gradientOverlayStyle}></div>
 
             <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" style={buttonStyleA} >
-                <Button style={buttonStyle}>JETZT HÖREN</Button>
+                <Button className="responsive-button" style={buttonStyle}>JETZT HÖREN</Button>
             </a>
         </div>
     );
