@@ -178,12 +178,10 @@ function getLiveBlogs(callback) {
 
             callback(null, liveblogs);
         });
-
-        connection.end();
     });
 }
 
-function createLiveBlog(title, description, ticketLink, imageSource, callback) {
+function createLiveBlog(liveblog, callback) {
     pool.getConnection((err, connection) => {
         if (err) {
             console.error('Error connecting to database:', err);
@@ -193,9 +191,12 @@ function createLiveBlog(title, description, ticketLink, imageSource, callback) {
 
         const insertQuery = `INSERT INTO live (title, description, ticketLink, imageSource) 
                        VALUES (?, ?, ?, ?)`;
+        const values = [liveblog.title, liveblog.description, liveblog.ticketLink, liveblog.imageSource];
 
         // Execute the INSERT query
-        connection.query(insertQuery, [title, description, ticketLink, imageSource], (error, results) => {
+        connection.query(insertQuery, values, (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error inserting live entry:', error);
                 callback(error, null);
@@ -204,8 +205,6 @@ function createLiveBlog(title, description, ticketLink, imageSource, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
