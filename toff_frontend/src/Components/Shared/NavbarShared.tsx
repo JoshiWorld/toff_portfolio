@@ -25,6 +25,7 @@ function NavbarShared() {
                         <CustomNavLink to="/live">Live</CustomNavLink>
                         <CustomNavLink to="/songanteile">Songanteile</CustomNavLink>
                         <CustomNavLink to="/kontakt">Kontakt</CustomNavLink>
+                        <CustomNavLink to="/admin">Admin</CustomNavLink>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

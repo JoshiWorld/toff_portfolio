@@ -15,3 +15,6 @@ Content-Type: application/json
 {
   "password": "Test123?"
 }
+
+###
+GET http://localhost:3030/api/master/verify?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiaWF0IjoxNjk2OTY1NDgzLCJleHAiOjE2OTk1NTc0ODN9.1dbD-ED5CMAWDfnShwaoBrx8hCsCen5jLb4sw8VD4K4

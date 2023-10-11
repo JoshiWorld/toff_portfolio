@@ -3,4 +3,5 @@ export interface BlogEntryItem {
     description: string;
     ticketLink?: string;
     imageSource?: string;
+    archived: boolean;
 }

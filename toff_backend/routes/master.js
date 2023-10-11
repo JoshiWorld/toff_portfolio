@@ -53,7 +53,7 @@ router.get('/verify', function(req, res) {
             // If verification fails, the token is invalid or expired
             res.status(401).json({ message: 'Unauthorized' });
         } else {
-            res.status(200).json({ message: 'Token verified' });
+            res.status(200).json({ token: token });
         }
     });
 });

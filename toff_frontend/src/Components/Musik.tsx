@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Container from 'react-bootstrap/Container';
+import { useAuth } from '../Utils/AuthProvider';
 
 function SpotifyPlaylist() {
     const iframeStyle = {

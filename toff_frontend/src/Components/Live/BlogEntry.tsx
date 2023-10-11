@@ -26,7 +26,17 @@ function BlogEntry({ item }: BlogEntryProps) {
                 <Card.Text>
                     {item.description}
                 </Card.Text>
-                <Button variant="dark"><a href={item.ticketLink} target="_blank" rel="noopener noreferrer" style={BuyTickets}>Tickets kaufen</a></Button>
+                {item.ticketLink ? (
+                    <Button variant="dark">
+                        <a href={item.ticketLink} target="_blank" rel="noopener noreferrer" style={BuyTickets}>
+                            Tickets
+                        </a>
+                    </Button>
+                ) : (
+                    <Button variant="dark">
+                        Freier Eintritt
+                    </Button>
+                )}
             </Card.Body>
         </Card>
     );

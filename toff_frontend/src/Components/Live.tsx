@@ -1,48 +1,26 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import BlogEntry from './Live/BlogEntry';
 import Container from 'react-bootstrap/Container';
-import homeImage from '../Images/home.png';
-import { BlogEntryItem } from '../Types/types';
 import { Row } from 'react-bootstrap';
-
-const LiveAuftritte: BlogEntryItem[] = [
-    {
-        title: 'First Live Auftritt',
-        description: 'Live Auftritt am Landsberg See oder so',
-        ticketLink: 'https://google.de',
-        imageSource: homeImage,
-    },
-    {
-        title: 'Second Live Auftritt',
-        description: 'Live Auftritt am Landsberg Lech oder soooos',
-        ticketLink: 'https://google.de',
-        imageSource: homeImage,
-    },
-    {
-        title: 'Second Live Auftritt',
-        description: 'Live Auftritt am Landsberg Lech oder soooos',
-        ticketLink: 'https://google.de',
-        imageSource: homeImage,
-    },
-    {
-        title: 'Second Live Auftritt',
-        description: 'Live Auftritt am Landsberg Lech oder soooos',
-        ticketLink: 'https://google.de',
-        imageSource: homeImage,
-    },
-    {
-        title: 'Second Live Auftritt',
-        description: 'Live Auftritt am Landsberg Lech oder soooos',
-        ticketLink: 'https://google.de',
-        imageSource: homeImage,
-    },
-];
+import { BlogEntryItem } from '../Types/types';
 
 function Live() {
+    const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
+
+    useEffect(() => {
+        if(liveAuftritte.length === 0) {
+            // Fetch data from the backend when the component mounts
+            fetch('http://localhost:3030/api/live') // Replace with your actual API endpoint
+                .then((response) => response.json())
+                .then((data) => setLiveAuftritte(data))
+                .catch((error) => console.error('Error fetching data:', error));
+        }
+    }, []);
+
     return (
         <Container>
             <Row>
-                {LiveAuftritte.map((item, index) => (
+                {liveAuftritte.map((item, index) => (
                     <div key={index} className="col-md-4">
                         <BlogEntry item={item} />
                     </div>

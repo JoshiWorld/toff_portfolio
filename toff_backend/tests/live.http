@@ -6,9 +6,9 @@ Content-Type: application/json
 
 {
   "liveblog": {
-    "title": "Test",
-    "description": "Test Description",
-    "ticketLink": "LINK",
+    "title": "Test3",
+    "description": "Test Description3",
+    "ticketLink": "https://google.de",
     "imageSource": "IMGSOURCE"
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwiaWF0IjoxNjk2OTY1NDgzLCJleHAiOjE2OTk1NTc0ODN9.1dbD-ED5CMAWDfnShwaoBrx8hCsCen5jLb4sw8VD4K4"
