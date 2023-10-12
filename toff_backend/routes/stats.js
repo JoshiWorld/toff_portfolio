@@ -26,10 +26,11 @@ router.post('/create', verifyToken, function(req, res) {
 });
 
 router.put('/:id', verifyToken, function (req, res) {
-    const updatedItem = JSON.parse(req.body.item);
+    const updatedItem = req.body.stats;
 
     mysqlService.updateStats(req.params.id, updatedItem, (error, results) => {
         if (error) {
+            console.log('Item: ' + updatedItem);
             res.status(500).json({ message: 'Internal server error', error: error });
             return;
         }
