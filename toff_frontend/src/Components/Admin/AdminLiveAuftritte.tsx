@@ -3,6 +3,7 @@ import { BlogEntryItem } from '../../Types/types';
 import Container from 'react-bootstrap/Container';
 import { Table, Button } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
+import { API_BASE_URL } from '../../config';
 
 function AdminLiveAuftritte() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
@@ -12,7 +13,7 @@ function AdminLiveAuftritte() {
     useEffect(() => {
         if (liveAuftritte.length === 0) {
             // Fetch data from the backend when the component mounts
-            fetch('http://localhost:3030/api/live') // Replace with your actual API endpoint
+            fetch(`${API_BASE_URL}/api/live`) // Replace with your actual API endpoint
                 .then((response) => response.json())
                 .then((data) => setLiveAuftritte(data))
                 .catch((error) => console.error('Error fetching data:', error));
@@ -29,7 +30,7 @@ function AdminLiveAuftritte() {
         const image = updatedItem.image;
         delete updatedItem.image;
 
-        fetch(`http://localhost:3030/api/live/${updatedItem.id}`, {
+        fetch(`${API_BASE_URL}/api/live/${updatedItem.id}`, {
             method: 'PUT',
             // @ts-ignore
             headers: {

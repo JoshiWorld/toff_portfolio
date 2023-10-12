@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { InputGroup } from 'react-bootstrap';
 import { useAuth } from '../../../Utils/AuthProvider';
+import { API_BASE_URL } from '../../../config';
 
 // @ts-ignore
 function CreateStats({ show, onHide }) {
@@ -27,7 +28,7 @@ function CreateStats({ show, onHide }) {
         // Convert formData to a JSON string
         const formDataJSON = JSON.stringify({ stats: formData });
 
-        fetch('http://localhost:3030/api/stats/create', {
+        fetch(`${API_BASE_URL}/api/stats/create`, {
             method: 'POST',
             // @ts-ignore
             headers: {

@@ -2,6 +2,7 @@ import * as React from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { BlogEntryItem } from '../../Types/types';
+import { API_BASE_URL } from '../../config';
 
 interface BlogEntryProps {
     item: BlogEntryItem; // Use the interface to type the prop
@@ -20,7 +21,7 @@ function BlogEntry({ item }: BlogEntryProps) {
 
     return (
         <Card style={cardStyle}>
-            <Card.Img variant="top" src={`http://localhost:3030/${item.imageSource}`} />
+            <Card.Img variant="top" src={`${API_BASE_URL}/${item.imageSource}`} />
             <Card.Body>
                 <Card.Title>{item.title}</Card.Title>
                 <Card.Text>

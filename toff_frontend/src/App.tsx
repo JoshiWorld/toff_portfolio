@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 import NavbarShared from './Components/Shared/NavbarShared';
 import Home from './Components/Home';
-import FooterShared from './Components/Shared/FooterShared';
 import Musik from './Components/Musik';
 import NoMatch from './Components/Shared/NoMatch';
 import Kontakt from './Components/Kontakt';
@@ -39,7 +38,7 @@ function App() {
                         <Route path="*" element={<NoMatch />} />
                     </Routes>
 
-                    <FooterShared />
+                    {/*<FooterShared />*/}
                 </AuthProvider>
             </Router>
         </div>

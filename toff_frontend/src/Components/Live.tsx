@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { Image } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
+import { API_BASE_URL } from '../config';
 
 function Live() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
@@ -47,7 +48,7 @@ function Live() {
     useEffect(() => {
         if (liveAuftritte.length === 0) {
             // Fetch data from the backend when the component mounts
-            fetch('http://localhost:3030/api/live') // Replace with your actual API endpoint
+            fetch(`${API_BASE_URL}/api/live`) // Replace with your actual API endpoint
                 .then((response) => response.json())
                 .then((data) => setLiveAuftritte(data))
                 .catch((error) => console.error('Error fetching data:', error));
@@ -58,7 +59,7 @@ function Live() {
         <Carousel>
             {liveAuftritte.map((item, index) => (
                 <Carousel.Item key={index}>
-                    <Image src={`http://localhost:3030/uploads/1697063185342-DSC00271.jpg`} alt="Image" className="img-fluid" style={imageStyle} />
+                    <Image src={`${API_BASE_URL}/${item.imageSource}`} alt="Image" className="img-fluid" style={imageStyle} />
                     <div style={gradientOverlayStyle}></div>
 
                     <Carousel.Caption>

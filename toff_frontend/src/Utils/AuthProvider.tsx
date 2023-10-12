@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { API_BASE_URL } from '../config';
 
 const AuthContext = createContext({
   token: null as string | null,
@@ -54,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 async function getToken() {
   const token = getCookie('jwt');
-  const url = `http://localhost:3030/api/master/verify?token=${token}`;
+  const url = `${API_BASE_URL}/api/master/verify?token=${token}`;
   const result = await fetch(url);
 
   if (result.ok) {

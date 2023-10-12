@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import { Table, Button } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
 import CreateStats from './Components/CreateStats';
+import { API_BASE_URL } from '../../config';
 
 function AdminStats() {
     const [stats, setStats] = useState<StatsItem[]>([]);
@@ -12,7 +13,7 @@ function AdminStats() {
     const { token } = useAuth();
 
     useEffect(() => {
-        fetch('http://localhost:3030/api/stats')
+        fetch(`${API_BASE_URL}/api/stats`)
             .then((response) => response.json())
             .then((data) => setStats(data))
             .catch((error) => console.error('Error fetching data:', error));
@@ -27,7 +28,7 @@ function AdminStats() {
         const updatedItem = { ...updatedStats[index] };
         const formDataJSON = JSON.stringify({ stats: updatedItem });
 
-        fetch(`http://localhost:3030/api/stats/${updatedItem.id}`, {
+        fetch(`${API_BASE_URL}/api/stats/${updatedItem.id}`, {
             method: 'PUT',
             // @ts-ignore
             headers: {
