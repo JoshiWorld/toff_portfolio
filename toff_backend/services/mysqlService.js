@@ -31,7 +31,8 @@ pool.query(`
   CREATE TABLE IF NOT EXISTS stats (
     id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
-    value INT
+    value INT,
+    goal INT
   );
 `, (error, results) => {
     if (error) {
@@ -308,6 +309,7 @@ function getStats(callback) {
                         id: row.id,
                         title: row.title,
                         value: row.value,
+                        goal: row.goal,
                     };
 
                     stats.push(existingStat);
@@ -327,9 +329,9 @@ function createStats(stat, callback) {
             return;
         }
 
-        const insertQuery = `INSERT INTO stats (title, value) 
-                       VALUES (?, ?)`;
-        const values = [stat.title, stat.value];
+        const insertQuery = `INSERT INTO stats (title, value, goal) 
+                       VALUES (?, ?, ?)`;
+        const values = [stat.title, stat.value, stat.goal];
 
         // Execute the INSERT query
         connection.query(insertQuery, values, (error, results) => {

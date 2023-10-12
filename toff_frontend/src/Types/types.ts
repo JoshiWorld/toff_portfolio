@@ -7,3 +7,10 @@ export interface BlogEntryItem {
     archived: boolean;
     image?: File;
 }
+
+export interface StatsItem {
+    id: number;
+    title: string;
+    value?: number;
+    goal?: number;
+}
