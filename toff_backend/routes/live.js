@@ -29,8 +29,15 @@ router.get('/', function(req, res) {
     });
 });
 
-router.post('/create', verifyToken, function(req, res) {
-    mysqlService.createLiveBlog(req.body.liveblog, (error, results) => {
+router.post('/create', verifyToken, upload.single('image'), function(req, res) {
+    const createdItem = JSON.parse(req.body.liveblog);
+
+    if (req.file) {
+        const imageSource = req.file.path;
+        createdItem.imageSource = imageSource;
+    }
+
+    mysqlService.createLiveBlog(createdItem, (error, results) => {
         if(error) {
             res.status(500).json({ message: 'Internal server error', error: error });
             return;
