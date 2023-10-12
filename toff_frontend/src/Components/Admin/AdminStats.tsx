@@ -62,7 +62,6 @@ function AdminStats() {
 
     const handleOnHide = () => {
         setCreateStatsVisible(false);
-
     }
 
 
