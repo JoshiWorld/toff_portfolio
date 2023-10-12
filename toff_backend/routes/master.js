@@ -14,7 +14,7 @@ router.post('/create', function(req, res) {
     })
 });
 
-router.get('/', function(req, res) {
+router.post('/', function(req, res) {
     const password = req.body.password;
 
     mysqlService.getMaster('admin', password, (error, result) => {
