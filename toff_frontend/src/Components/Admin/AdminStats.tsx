@@ -74,7 +74,7 @@ function AdminStats() {
                 <tr>
                     <th>#</th>
                     <th>Titel</th>
-                    <th>Value</th>
+                    <th>Wert</th>
                     <th>Ziel</th>
                     <th></th>
                 </tr>
