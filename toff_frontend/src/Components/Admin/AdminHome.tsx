@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Nav from 'react-bootstrap/Nav';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 
 import AdminStats from './AdminStats';
 import AdminLiveAuftritte from './AdminLiveAuftritte';
 
 function AdminHome() {
     const location = useLocation();
+    const navigate = useNavigate();
+    const [activeComponent, setActiveComponent] = useState(<AdminStats />);
+
+    useEffect(() => {
+        switch (location.pathname) {
+            case '/admin/stats':
+                setActiveComponent(<AdminStats />);
+                break;
+            case '/admin/live':
+                setActiveComponent(<AdminLiveAuftritte />);
+                break;
+            default:
+                navigate('/admin/stats'); // Now the navigate function is available
+        }
+    }, [location.pathname, navigate]);
 
     return (
         <div>
@@ -31,8 +46,7 @@ function AdminHome() {
                 </Nav>
             </div>
 
-            {location.pathname === '/admin/stats' && <AdminStats />}
-            {location.pathname === '/admin/live' && <AdminLiveAuftritte />}
+            {activeComponent}
         </div>
     );
 }
