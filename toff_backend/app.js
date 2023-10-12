@@ -18,7 +18,7 @@ app.use(express.json({ limit: '10mb' }));
 // Increase the request size limit for URL-encoded data (e.g., 10MB)
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
