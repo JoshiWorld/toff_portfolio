@@ -12,6 +12,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import AdminHome from './Components/Admin/AdminHome';
 import Unauthorized from './Components/Unauthorized';
 import { AuthProvider, useAuth } from './Utils/AuthProvider';
+import AdminLogin from './Components/Admin/AdminLogin';
+import Logout from './Components/Logout';
 
 function App() {
     return (
@@ -26,8 +28,11 @@ function App() {
                         <Route path="/live" element={<Live />} />
                         <Route path="/impressum" element={<Impressum />} />
 
-                        <Route path="/admin/*">
-                            <Route index element={<ProtectedRoute><AdminHome /></ProtectedRoute>} />
+                        <Route path="/login" element={<AdminLogin />} />
+                        <Route path="/logout" element={<Logout />} />
+
+                        <Route path="/admin/*" element={<ProtectedRoute><AdminHome /></ProtectedRoute>}>
+                            {/*<Route index element={<ProtectedRoute><AdminHome /></ProtectedRoute>} />*/}
                         </Route>
 
                         <Route path="/unauthorized" element={<Unauthorized />} />
