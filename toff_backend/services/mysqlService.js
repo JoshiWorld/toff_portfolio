@@ -27,6 +27,12 @@ pool.query(`
     role VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
   );
+  
+  CREATE TABLE IF NOT EXISTS stats (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    value INT
+  );
 `, (error, results) => {
     if (error) {
         console.error('Error creating tables:', error);
@@ -267,6 +273,138 @@ function deleteLiveBlog(id, callback) {
 
 
 
+/* STATS */
+
+
+function getStats(callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const query = 'SELECT * FROM stats';
+
+        connection.query(query, (error, results) => {
+            connection.release(); // Release the connection back to the pool
+
+            if (error) {
+                console.error('Error executing query:', error);
+                callback(error, null);
+                return;
+            }
+
+            const stats = [];
+
+            results.forEach(row => {
+                const statsId = row.id;
+
+                // Check if the order already exists in the orders array
+                let existingStat = stats.find(stat => stat.id === statsId);
+
+                if (!existingStat) {
+                    existingStat = {
+                        id: row.id,
+                        title: row.title,
+                        value: row.value,
+                    };
+
+                    stats.push(existingStat);
+                }
+            });
+
+            callback(null, stats);
+        });
+    });
+}
+
+function createStats(stat, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const insertQuery = `INSERT INTO stats (title, value) 
+                       VALUES (?, ?)`;
+        const values = [stat.title, stat.value];
+
+        // Execute the INSERT query
+        connection.query(insertQuery, values, (error, results) => {
+            connection.release();
+
+            if (error) {
+                console.error('Error inserting stats entry:', error);
+                callback(error, null);
+            } else {
+                console.log('Stats entry inserted successfully');
+                callback(null, results);
+            }
+        });
+    });
+}
+
+function updateStats(id, updatedData, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        // Construct the SQL query to update the stats entry
+        const updateQuery = `
+        UPDATE stats
+        SET ?  -- Use an object to represent the updated data
+        WHERE id = ?;`;
+
+        // Execute the SQL query with the provided data
+        connection.query(updateQuery, [updatedData, id], (error, results) => {
+            if (error) {
+                console.error('Error updating stats entry:', error);
+                callback(error, null);
+            } else {
+                console.log('Stats entry updated successfully');
+                callback(null, results);
+            }
+        });
+
+        connection.end();
+    });
+}
+
+function deleteStats(id, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        // Construct the SQL query to delete the live entry
+        const deleteQuery = `
+        DELETE FROM stats
+        WHERE id = ?;`;
+
+        // Execute the SQL query with the provided ID
+        connection.query(deleteQuery, [id], (error, results) => {
+            if (error) {
+                console.error('Error deleting stats entry:', error);
+                callback(error, null);
+            } else {
+                console.log('Stats entry deleted successfully');
+                callback(null, results);
+            }
+        });
+
+        connection.end();
+    });
+}
+
+
+
 /* MYSQL */
 
 
@@ -294,5 +432,11 @@ module.exports = {
     getLiveBlogs,
     createLiveBlog,
     updateLiveBlog,
-    deleteLiveBlog
+    deleteLiveBlog,
+
+    // STATS
+    getStats,
+    createStats,
+    updateStats,
+    deleteStats
 };
