@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 const mysqlService = require('../services/mysqlService');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const { Blob } = require('blob');
 
 const multer = require('multer');
 const storage = multer.diskStorage({
