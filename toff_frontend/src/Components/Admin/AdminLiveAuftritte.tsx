@@ -165,7 +165,7 @@ function AdminLiveAuftritte() {
                                 />
                             ) : item.imageSource ? (
                                 <img
-                                    src={`http://localhost:3030/${item.imageSource}`}
+                                    src={`${API_BASE_URL}/${item.imageSource}`}
                                     alt="Source"
                                     style={{ maxWidth: '30%', maxHeight: '30%', width: '30', height: 'auto' }}
                                 />
