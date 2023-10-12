@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BlogEntryItem } from '../../Types/types';
 import Container from 'react-bootstrap/Container';
-import { Row, Table, Button } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
 
 function AdminLiveAuftritte() {
