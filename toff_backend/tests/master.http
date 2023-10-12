@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3030/api/master/
+POST http://localhost:3030/api/master/
 Content-Type: application/json
 
 {
