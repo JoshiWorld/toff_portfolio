@@ -53,7 +53,7 @@ function Live() {
                 .then((data) => setLiveAuftritte(data))
                 .catch((error) => console.error('Error fetching data:', error));
         }
-    }, []);
+    }, [liveAuftritte.length]);
 
     return (
         <Carousel>
