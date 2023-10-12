@@ -18,7 +18,7 @@ function AdminLiveAuftritte() {
                 .then((data) => setLiveAuftritte(data))
                 .catch((error) => console.error('Error fetching data:', error));
         }
-    }, []);
+    }, [liveAuftritte.length]);
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
@@ -160,7 +160,7 @@ function AdminLiveAuftritte() {
                             ) : item.imageSource ? (
                                 <img
                                     src={`http://localhost:3030/${item.imageSource}`}
-                                    alt="Image"
+                                    alt="Source"
                                     style={{ maxWidth: '30%', maxHeight: '30%', width: '30', height: 'auto' }}
                                 />
                             ) : (
