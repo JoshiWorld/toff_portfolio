@@ -6,17 +6,17 @@ var logger = require('morgan');
 const cors = require('cors');
 require('dotenv').config();
 
-// Increase the request size limit for JSON data (e.g., 10MB)
-app.use(express.json({ limit: '10mb' }));
-
-// Increase the request size limit for URL-encoded data (e.g., 10MB)
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
 var liveRouter = require('./routes/live');
 var masterRouter = require('./routes/master');
 var statsRouter = require('./routes/stats');
 
 var app = express();
+
+// Increase the request size limit for JSON data (e.g., 10MB)
+app.use(express.json({ limit: '10mb' }));
+
+// Increase the request size limit for URL-encoded data (e.g., 10MB)
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
