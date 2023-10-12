@@ -20,7 +20,7 @@ function BlogEntry({ item }: BlogEntryProps) {
 
     return (
         <Card style={cardStyle}>
-            <Card.Img variant="top" src={item.imageSource} />
+            <Card.Img variant="top" src={`http://localhost:3030/${item.imageSource}`} />
             <Card.Body>
                 <Card.Title>{item.title}</Card.Title>
                 <Card.Text>
