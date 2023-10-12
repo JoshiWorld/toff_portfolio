@@ -28,6 +28,7 @@ const corsOptions = {
   origin: 'http://localhost:3001',
 };
 
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 
 app.use('/api/live', liveRouter);
