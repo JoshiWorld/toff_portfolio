@@ -12,13 +12,10 @@ function AdminStats() {
     const { token } = useAuth();
 
     useEffect(() => {
-        if (stats.length === 0) {
-            // Fetch data from the backend when the component mounts
-            fetch('http://localhost:3030/api/stats') // Replace with your actual API endpoint
-                .then((response) => response.json())
-                .then((data) => setStats(data))
-                .catch((error) => console.error('Error fetching data:', error));
-        }
+        fetch('http://localhost:3030/api/stats')
+            .then((response) => response.json())
+            .then((data) => setStats(data))
+            .catch((error) => console.error('Error fetching data:', error));
     }, []);
 
     const handleEditClick = (index: number) => {
@@ -28,18 +25,16 @@ function AdminStats() {
     const handleSaveClick = (index: number, item: StatsItem) => {
         const updatedStats = [...stats];
         const updatedItem = { ...updatedStats[index] };
+        const formDataJSON = JSON.stringify({ stats: updatedItem });
 
         fetch(`http://localhost:3030/api/stats/${updatedItem.id}`, {
             method: 'PUT',
             // @ts-ignore
             headers: {
+                'Content-Type': 'application/json',
                 'authorization': token,
             },
-            body: (() => {
-                const formData = new FormData();
-                formData.append('item', JSON.stringify(updatedItem));
-                return formData;
-            })(),
+            body: formDataJSON,
         })
             .then((response) => {
                 if (response.ok) {
@@ -63,6 +58,11 @@ function AdminStats() {
     const handleCancelClick = () => {
         setEditableRow(null);
     };
+
+    const handleOnHide = () => {
+        setCreateStatsVisible(false);
+
+    }
 
 
     const isRowEditable = (index: number) => index === editableRow;
@@ -154,7 +154,7 @@ function AdminStats() {
             </Table>
 
             {isCreateStatsVisible ? (
-                <CreateStats show={isCreateStatsVisible} onHide={() => setCreateStatsVisible(false)} />
+                <CreateStats show={isCreateStatsVisible} onHide={handleOnHide} />
             ) : (
                 <>
                     {/* Your existing code */}
