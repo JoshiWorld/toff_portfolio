@@ -30,13 +30,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []); // The empty dependency array ensures this effect runs once on component mount
 
   const login = () => {
-    // Implement your login logic and set the token
-    setToken('your_token_here'); // Replace 'your_token_here' with the actual token
-    console.log('I got pressed');
+    setToken(getCookie('jwt'));
   };
 
   const logout = () => {
-    // Implement your logout logic and reset the token
+    removeCookie('jwt');
     setToken('');
   };
 
@@ -75,4 +73,8 @@ function getCookie(name: string) {
     }
   }
   return null;
+}
+
+function removeCookie(name: string) {
+  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 }
