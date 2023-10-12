@@ -1,14 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import BlogEntry from './Live/BlogEntry';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
 import { BlogEntryItem } from '../Types/types';
+import Carousel from 'react-bootstrap/Carousel';
+import Button from 'react-bootstrap/Button';
+import { Image } from 'react-bootstrap';
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
 
 function Live() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
 
+    const BuyTickets: React.CSSProperties = {
+        textDecoration: 'none',
+        color: 'white',
+        border: '3px solid black', // Add a border
+        borderRadius: '4px',
+        boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.4)', // Add a slight drop shadow
+    };
+
+    const RemoveLinks: React.CSSProperties = {
+        textDecoration: 'none',
+        color: 'white',
+    }
+
+    const gradientOverlayStyle: React.CSSProperties = {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        height: '3%', // Adjust the height to control the fading area
+        background: 'linear-gradient(transparent, white)', // Create a gradient from transparent to white
+    };
+
+    const imageStyle: React.CSSProperties = {
+        zIndex: 1,
+    };
+
+    const cardStyle = {
+        border: '0px', // Remove the border
+        boxShadow: '7px 7px 7px rgba(0, 0, 0, 0.4)', // Add a slight drop shadow
+    };
+
+    const containerStyle = {
+        maxWidth: '300px', // Adjust the maximum width as needed
+    };
+
     useEffect(() => {
-        if(liveAuftritte.length === 0) {
+        if (liveAuftritte.length === 0) {
             // Fetch data from the backend when the component mounts
             fetch('http://localhost:3030/api/live') // Replace with your actual API endpoint
                 .then((response) => response.json())
@@ -18,15 +55,36 @@ function Live() {
     }, []);
 
     return (
-        <Container>
-            <Row>
-                {liveAuftritte.map((item, index) => (
-                    <div key={index} className="col-md-4">
-                        <BlogEntry item={item} />
-                    </div>
-                ))}
-            </Row>
-        </Container>
+        <Carousel>
+            {liveAuftritte.map((item, index) => (
+                <Carousel.Item key={index}>
+                    <Image src={`http://localhost:3030/uploads/1697063185342-DSC00271.jpg`} alt="Image" className="img-fluid" style={imageStyle} />
+                    <div style={gradientOverlayStyle}></div>
+
+                    <Carousel.Caption>
+                        <Container style={containerStyle}>
+                            <Card style={cardStyle}>
+                                <Card.Header>{item.title}</Card.Header>
+                                <Card.Body>
+                                    <Card.Text>
+                                        {item.description}
+                                    </Card.Text>
+                                    <Button variant="dark" style={BuyTickets}>
+                                        {item.ticketLink ? (
+                                            <a href={item.ticketLink} target="_blank" rel="noopener noreferrer" style={RemoveLinks}>
+                                                Tickets
+                                            </a>
+                                        ) : (
+                                            'Freier Eintritt'
+                                        )}
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </Container>
+                    </Carousel.Caption>
+                </Carousel.Item>
+            ))}
+        </Carousel>
     );
 }
 
