@@ -158,8 +158,6 @@ function AdminStats() {
                 <CreateStats show={isCreateStatsVisible} onHide={handleOnHide} />
             ) : (
                 <>
-                    {/* Your existing code */}
-                    {/* ... */}
                     <Button variant="success" onClick={() => setCreateStatsVisible(true)}>Erstellen</Button>
                 </>
             )}
