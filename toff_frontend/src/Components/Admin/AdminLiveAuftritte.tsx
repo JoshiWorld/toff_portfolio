@@ -4,10 +4,12 @@ import Container from 'react-bootstrap/Container';
 import { Table, Button } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
 import { API_BASE_URL } from '../../config';
+import CreateLiveAuftritt from './Components/CreateLiveAuftritt';
 
 function AdminLiveAuftritte() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
     const [editableRow, setEditableRow] = useState<number | null>(null);
+    const [isCreateLiveVisible, setCreateLiveVisible] = useState(false);
     const { token } = useAuth();
 
     useEffect(() => {
@@ -66,6 +68,10 @@ function AdminLiveAuftritte() {
     const handleCancelClick = () => {
         setEditableRow(null);
     };
+
+    const handleOnHide = () => {
+        setCreateLiveVisible(false);
+    }
 
 
     const isRowEditable = (index: number) => index === editableRow;
@@ -203,6 +209,14 @@ function AdminLiveAuftritte() {
                 ))}
                 </tbody>
             </Table>
+
+            {isCreateLiveVisible ? (
+                <CreateLiveAuftritt show={isCreateLiveVisible} onHide={handleOnHide} />
+            ) : (
+                <>
+                    <Button variant="success" onClick={() => setCreateLiveVisible(true)}>Erstellen</Button>
+                </>
+            )}
         </Container>
     );
 }
