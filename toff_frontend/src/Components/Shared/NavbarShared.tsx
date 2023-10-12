@@ -3,8 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import CustomNavLink from './CustomNavLink';
+import { useAuth } from '../../Utils/AuthProvider';
 
 function NavbarShared() {
+    const {token} = useAuth();
+
     return (
         <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
             <Container>
@@ -25,7 +28,8 @@ function NavbarShared() {
                         <CustomNavLink to="/live">Live</CustomNavLink>
                         <CustomNavLink to="/songanteile">Songanteile</CustomNavLink>
                         <CustomNavLink to="/kontakt">Kontakt</CustomNavLink>
-                        <CustomNavLink to="/admin">Admin</CustomNavLink>
+                        {token && <CustomNavLink to="/admin">Admin</CustomNavLink>}
+                        {token && <CustomNavLink to="/logout">Logout</CustomNavLink>}
                     </Nav>
                 </Navbar.Collapse>
             </Container>
