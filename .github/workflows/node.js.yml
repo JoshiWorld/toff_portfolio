@@ -27,7 +27,7 @@ jobs:
           cache: 'npm'
 
       - name: Set working directory to frontend
-        run: cd ./toff_frontend
+        run: cd toff_frontend/
 
       - name: Initialize Frontend
         run: npm ci
@@ -39,7 +39,7 @@ jobs:
         run: npm test
 
       - name: Set working directory to backend
-        run: cd ../toff_backend
+        run: cd ../toff_backend/
 
       - name: Initialize Backend
         run: npm ci
