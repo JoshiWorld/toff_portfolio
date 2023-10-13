@@ -32,6 +32,9 @@ jobs:
     - name: Build frontend
       working-directory: ./toff_frontend
       run: npm run build
-    - name: Run Tests
+    - name: Run Frontend Tests
       working-directory: ./toff_frontend
       run: npm test
+    - name: Initialize Backend
+      working-directory: ./toff_backend
+      run: npm ci
