@@ -23,12 +23,12 @@ jobs:
 
       - name: Set secrets as environment variables
         run: |
-          echo "SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}" >> $GITHUB_WORKSPACE/toff_backend/.env
-          echo "JWT_SECRET=${{ secrets.JWT_TOKEN }}" >> $GITHUB_WORKSPACE/toff_backend/.env
-          echo "PORT=${{ secrets.PORT }}" >> $GITHUB_WORKSPACE/toff_backend/.env
-          echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> $GITHUB_WORKSPACE/toff_backend/.env
-          echo "SQL_DB=${{ secrets.SQL_DB }}" >> $GITHUB_WORKSPACE/toff_backend/.env
-          echo "SQL_USER=${{ secrets.SQL_USER }}" >> $GITHUB_WORKSPACE/toff_backend/.env
+          echo "SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}" >> /toff_backend/.env
+          echo "JWT_SECRET=${{ secrets.JWT_TOKEN }}" >> /toff_backend/.env
+          echo "PORT=${{ secrets.PORT }}" >> /toff_backend/.env
+          echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> /toff_backend/.env
+          echo "SQL_DB=${{ secrets.SQL_DB }}" >> /toff_backend/.env
+          echo "SQL_USER=${{ secrets.SQL_USER }}" >> /toff_backend/.env
         working-directory: $GITHUB_WORKSPACE
 
       - name: Use Node.js ${{ matrix.node-version }}
