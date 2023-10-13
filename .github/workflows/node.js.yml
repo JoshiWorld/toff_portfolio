@@ -32,7 +32,8 @@ jobs:
         working-directory: toff_backend/
 
       - name: Create symbolic link for uploads
-        run: ln -s uploads/ actions-runner/_work/toff_portfolio/toff_portfolio/toff_backend/uploads
+        run: ln -s /home/toff/uploads/ /home/toff/actions-runner/_work/toff_portfolio/toff_portfolio/toff_backend/uploads
+
 
 
       - name: Use Node.js ${{ matrix.node-version }}
