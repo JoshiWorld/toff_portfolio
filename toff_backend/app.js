@@ -20,6 +20,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
