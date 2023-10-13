@@ -50,6 +50,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
+            cd ./toff_portfolio/
             git pull # we pull any changes from git
             cd ./toff_frontend/
             npm install # we install any missing dependencies
