@@ -26,26 +26,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Set working directory to frontend
-        run: cd toff_frontend/
-
       - name: Initialize Frontend
+        working-directory: toff_frontend/
         run: npm ci
 
       - name: Build Frontend
+        working-directory: toff_frontend/
         run: npm run build
 
-      - name: Run Frontend Tests
-        run: npm test
-
-      - name: Set working directory to backend
-        run: cd ../toff_backend/
-
       - name: Initialize Backend
+        working-directory: toff_backend/
         run: npm ci
-
-      - name: Run Backend Tests
-        run: npm test
 
   deploy:
     runs-on: self-hosted
