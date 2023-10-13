@@ -12,9 +12,6 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: ./toff_portfolio  # Set the root directory here
 
     strategy:
       matrix:
@@ -22,22 +19,33 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - name: Initialize CI
+
+      - name: Set working directory to frontend
+        run: cd ./toff_frontend
+
+      - name: Initialize Frontend
         run: npm ci
-      - name: Build frontend
-        working-directory: ./toff_frontend  # You can set a subdirectory for specific steps
+
+      - name: Build Frontend
         run: npm run build
+
       - name: Run Frontend Tests
-        working-directory: ./toff_frontend  # You can set a subdirectory for specific steps
         run: npm test
+
+      - name: Set working directory to backend
+        run: cd ../toff_backend
+
       - name: Initialize Backend
-        working-directory: ./toff_backend  # You can set a subdirectory for specific steps
         run: npm ci
+
+      - name: Run Backend Tests
+        run: npm test
 
   deploy:
     runs-on: self-hosted
