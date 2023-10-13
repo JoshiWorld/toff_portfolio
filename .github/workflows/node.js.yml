@@ -19,7 +19,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+
+      - name: Set secrets as environment variables
+        run: |
+          echo "SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}" >> $GITHUB_WORKSPACE/toff_backend/.env
+          echo "JWT_SECRET=${{ secrets.JWT_TOKEN }}" >> $GITHUB_WORKSPACE/toff_backend/.env
+          echo "PORT=${{ secrets.PORT }}" >> $GITHUB_WORKSPACE/toff_backend/.env
+          echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> $GITHUB_WORKSPACE/toff_backend/.env
+          echo "SQL_DB=${{ secrets.SQL_DB }}" >> $GITHUB_WORKSPACE/toff_backend/.env
+          echo "SQL_USER=${{ secrets.SQL_USER }}" >> $GITHUB_WORKSPACE/toff_backend/.env
+        working-directory: $GITHUB_WORKSPACE
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -27,39 +37,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Identify changed files
-        run: |
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          echo "$changed_files" > changed_files.txt
-        id: changed
-
-      - name: Copy changed files to deployment directory
-        run: |
-          deployment_dir=deployment
-          mkdir -p $deployment_dir
-          xargs -I {} cp --parents {} $deployment_dir < changed_files.txt
-        if: steps.changed.outputs.changed != ''
-
       - name: Initialize Frontend
         working-directory: toff_frontend/
         run: npm ci
-        if: steps.changed.outputs.changed == ''
 
       - name: Build Frontend
         working-directory: toff_frontend/
         run: npm run build
-        if: steps.changed.outputs.changed == ''
 
       - name: Initialize Backend
         working-directory: toff_backend/
         run: npm ci
-        if: steps.changed.outputs.changed == ''
-
-      - name: Deploy the changed files
-        run: |
-          # Your deployment logic here
-          # For example, deploy the contents of $deployment_dir to your target location.
-        if: steps.changed.outputs.changed != ''
   deploy:
     runs-on: self-hosted
     needs: build # this job depends on "test" having finished
