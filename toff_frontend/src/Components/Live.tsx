@@ -34,6 +34,8 @@ function Live() {
 
     const imageStyle: React.CSSProperties = {
         zIndex: 1,
+        width: "100%",
+        height: "auto",
     };
 
     const cardStyle = {
