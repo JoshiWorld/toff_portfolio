@@ -12,31 +12,33 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./toff_portfolio  # Set the root directory here
 
     strategy:
       matrix:
-        node-version: [16.20.0]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [ 16.20.0 ]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: Initialize CI
-      working-directory: ./toff_frontend
-      run: npm ci
-    - name: Build frontend
-      working-directory: ./toff_frontend
-      run: npm run build
-    - name: Run Frontend Tests
-      working-directory: ./toff_frontend
-      run: npm test
-    - name: Initialize Backend
-      working-directory: ./toff_backend
-      run: npm ci
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Initialize CI
+        run: npm ci
+      - name: Build frontend
+        working-directory: ./toff_frontend  # You can set a subdirectory for specific steps
+        run: npm run build
+      - name: Run Frontend Tests
+        working-directory: ./toff_frontend  # You can set a subdirectory for specific steps
+        run: npm test
+      - name: Initialize Backend
+        working-directory: ./toff_backend  # You can set a subdirectory for specific steps
+        run: npm ci
+
   deploy:
     runs-on: self-hosted
     needs: build # this job depends on "test" having finished
