@@ -37,6 +37,10 @@ section article.tall p {
     overflow: hidden;
 }
 
+section article.tall div span {
+    border-radius: 4px;
+}
+
 section article.tall div span:nth-child(1) {
     position: absolute;
     top: 0;
