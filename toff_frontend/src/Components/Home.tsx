@@ -1,6 +1,7 @@
 import React from 'react';
 import homeImage from '../Images/home.png';
 import Button from 'react-bootstrap/Button';
+import './Home.css';
 
 function Home() {
     const containerStyle: React.CSSProperties = {
@@ -53,6 +54,10 @@ function Home() {
             <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" style={buttonStyleA} >
                 <Button className="responsive-button" style={buttonStyle}>JETZT HÖREN</Button>
             </a>
+
+            {/*<div className="overlay">*/}
+            {/*    <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" ></a>*/}
+            {/*</div>*/}
         </div>
     );
 }
