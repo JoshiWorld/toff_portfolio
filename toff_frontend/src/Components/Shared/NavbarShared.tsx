@@ -11,7 +11,7 @@ function NavbarShared() {
     return (
         <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
             <Container>
-                <Navbar.Brand href="#home">
+                <Navbar.Brand href="/" style={{ fontFamily: 'Cambria' }}>
                     <img
                         src="/logo.svg"
                         width="30"
