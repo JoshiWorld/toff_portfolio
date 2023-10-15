@@ -2,3 +2,8 @@
     font-family: 'Oswald';
     src: local('Oswald'), url('./Oswald/Oswald-VariableFont_wght.ttf');
 }
+
+@font-face {
+    font-family: 'Cambria';
+    src: local('Cambria'), url('./Cambria.ttf');
+}
