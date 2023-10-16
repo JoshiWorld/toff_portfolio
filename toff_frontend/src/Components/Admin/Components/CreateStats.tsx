@@ -12,6 +12,7 @@ function CreateStats({ show, onHide }) {
         title: '',
         value: '',
         goal: '',
+        color: '',
     });
     const {token} = useAuth();
 
@@ -89,6 +90,17 @@ function CreateStats({ show, onHide }) {
                                 value={formData.goal}
                                 onChange={handleChange}
                                 placeholder="100000"
+                            />
+                        </InputGroup>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="createStatsForm.Color">
+                        <Form.Label>Farbe</Form.Label>
+                        <InputGroup className="mb-3">
+                            <Form.Control
+                                type="color"
+                                name="color"
+                                value={formData.color}
+                                onChange={handleChange}
                             />
                         </InputGroup>
                     </Form.Group>
