@@ -5,6 +5,7 @@ import { Table, Button } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
 import CreateStats from './Components/CreateStats';
 import { API_BASE_URL } from '../../config';
+import { stat } from 'fs';
 
 function AdminStats() {
     const [stats, setStats] = useState<StatsItem[]>([]);
@@ -21,6 +22,24 @@ function AdminStats() {
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
+    };
+
+    const handleRemoveClick = (index: number) => {
+        const statToBeRemoved = stats[index];
+        fetch(`${API_BASE_URL}/api/stats/${statToBeRemoved.id}`, {
+            method: 'DELETE',
+            // @ts-ignore
+            headers: {
+                'authorization': token
+            }
+        }).then((response) => {
+            if(response.ok) {
+                window.location.reload();
+            }
+        }).catch((error) => {
+            // Handle any errors, e.g., display an error message
+            console.error('Error deleting data:', error);
+        });
     };
 
     const handleSaveClick = (index: number, item: StatsItem) => {
@@ -167,11 +186,14 @@ function AdminStats() {
                         <td>
                             {isRowEditable(index) ? (
                                 <div>
-                                    <Button variant="success" onClick={() => handleSaveClick(index, item)}>Save</Button>
-                                    <Button variant="danger" className="ms-1" onClick={handleCancelClick}>Cancel</Button>
+                                    <Button variant="success" onClick={() => handleSaveClick(index, item)}>Speichern</Button>
+                                    <Button variant="danger" className="ms-1" onClick={handleCancelClick}>Abbrechen</Button>
                                 </div>
                             ) : (
-                                <Button variant="dark" onClick={() => handleEditClick(index)}>Edit</Button>
+                                <div>
+                                    <Button variant="dark" onClick={() => handleEditClick(index)}>Bearbeiten</Button>
+                                    <Button variant="danger" className="ms-1" onClick={() => handleRemoveClick(index)}>Löschen</Button>
+                                </div>
                             )}
                         </td>
                     </tr>
