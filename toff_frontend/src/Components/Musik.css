@@ -65,20 +65,20 @@ section article.tall div span:nth-child(2) {
     z-index: -1;
 }
 
-section article.tall div:nth-child(1) span:nth-child(2) {
-    width: 95%;
-    animation-delay: 0s;
-}
+/*section article.tall div:nth-child(1) span:nth-child(2) {*/
+/*    width: 95%;*/
+/*    animation-delay: 0s;*/
+/*}*/
 
-section article.tall div:nth-child(2) span:nth-child(2) {
-    width: 80%;
-    animation-delay: 0.05s;
-}
+/*section article.tall div:nth-child(2) span:nth-child(2) {*/
+/*    width: 80%;*/
+/*    animation-delay: 0.05s;*/
+/*}*/
 
-section article.tall div:nth-child(3) span:nth-child(2) {
-    width: 90%;
-    animation-delay: 0.1s;
-}
+/*section article.tall div:nth-child(3) span:nth-child(2) {*/
+/*    width: 90%;*/
+/*    animation-delay: 0.1s;*/
+/*}*/
 
 section::before {
     position: absolute;
