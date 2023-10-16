@@ -111,7 +111,7 @@ function AdminLiveAuftritte() {
                             <th>Titel</th>
                             <th>Beschreibung</th>
                             <th>Tickets</th>
-                            <th>Bild</th>
+                            <th>Bild/Video</th>
                             <th>Archiviert</th>
                             <th></th>
                         </tr>
@@ -195,8 +195,17 @@ function AdminLiveAuftritte() {
                                             alt="Source"
                                             style={{ maxWidth: '30%', maxHeight: '30%', width: '30', height: 'auto' }}
                                         />
+                                    ) : item.mediaSource ? (
+                                        <video
+                                            src={`${API_BASE_URL}/api/${item.mediaSource}`}
+                                            muted
+                                            autoPlay
+                                            controls={false}
+                                            loop
+                                            style={{ maxWidth: '30%', maxHeight: '30%', width: '30', height: 'auto' }}
+                                        />
                                     ) : (
-                                        'Kein Bild'
+                                        'Kein Bild oder Video'
                                     )}
                                 </td>
 
