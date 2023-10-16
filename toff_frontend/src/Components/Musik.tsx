@@ -2,11 +2,17 @@ import React from 'react';
 import './Musik.css';
 
 function Musik() {
-    const elementData = [
-        { width: '95%' },
-        { width: '80%' },
-        { width: '90%' },
+    const stats = [
+        { id: 1, title: 'Spotify', value: 900, goal: 1000 },
+        { id: 2, title: 'Test', value: 1005, goal: 10000 },
+        { id: 3, title: 'Hallo', value: 50000, goal: 60000 },
     ];
+
+    const statsWithPercentage = stats.map((item) => {
+        const percentage = (item.value / item.goal) * 100;
+        const percentageString = percentage + '%';
+        return { ...item, percentageString };
+    });
 
     return (
         <div className="charts">
@@ -14,9 +20,9 @@ function Musik() {
                 <section id="tall">
                     <article className="tall">
                         <h1>STATS</h1>
-                        {elementData.map((data, index) => (
+                        {statsWithPercentage.map((data, index) => (
                             <div key={index}>
-                                <p>Test {data.width} <span></span><span className="tall" style={{ width: data.width, animationDelay: `${index * 0.05}s` }}></span></p>
+                                <p>{data.title} <span></span><span className="tall" style={{ width: data.percentageString, animationDelay: `${index * 0.05}s` }}></span></p>
                             </div>
                         ))}
                     </article>
