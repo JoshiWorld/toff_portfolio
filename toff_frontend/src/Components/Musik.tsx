@@ -34,7 +34,12 @@ function Musik() {
                         <h1>STATS</h1>
                         {stats.map((data, index) => (
                             <div key={index}>
-                                <p>{data.title} <span></span><span className="tall" style={{ background: data.color, width: data.percentageString, animationDelay: `${index * 0.05}s` }}></span></p>
+                                <p>{data.title}
+                                    <span style={{ textAlign: "right", alignItems: "center" }}><p>{data.goal}</p></span>
+                                    <span className="tall" style={{ background: data.color, width: data.percentageString, animationDelay: `${index * 0.05}s` }}>
+                                        <p style={{ textAlign: "left" }}>{data.value}</p>
+                                    </span>
+                                </p>
                             </div>
                         ))}
                     </article>
