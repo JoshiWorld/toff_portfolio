@@ -45,7 +45,7 @@ function AdminStats() {
         });
     };
 
-    const handleSaveClick = (index: number, item: StatsItem) => {
+    const handleSaveClick = (index: number) => {
         const updatedStats = [...stats];
         const updatedItem = { ...updatedStats[index] };
         const formDataJSON = JSON.stringify({ stats: updatedItem });
@@ -193,7 +193,7 @@ function AdminStats() {
                                 <td>
                                     {isRowEditable(index) ? (
                                         <div>
-                                            <Button variant="success" onClick={() => handleSaveClick(index, item)}>Speichern</Button>
+                                            <Button variant="success" onClick={() => handleSaveClick(index)}>Speichern</Button>
                                             <Button variant="danger" className="ms-1" onClick={handleCancelClick}>Abbrechen</Button>
                                         </div>
                                     ) : (
