@@ -3,9 +3,11 @@ import './Musik.css';
 import {StatsItem} from "../Types/types";
 import {API_BASE_URL} from "../config";
 import MusikPlaylist from './MusikPlaylist';
+import { Spinner } from 'react-bootstrap';
 
 function Musik() {
     const [stats, setStats] = useState<StatsItem[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         if (stats.length === 0) {
@@ -22,6 +24,7 @@ function Musik() {
                     });
                     // Set the stats state with the calculated data
                     setStats(statsWithPercentage);
+                    setIsLoading(false);
                 })
                 .catch((error) => console.error('Error fetching data:', error));
         }
@@ -33,7 +36,10 @@ function Musik() {
                 <section id="tall">
                     <article className="tall">
                         <MusikPlaylist />
-                        {stats.length !== 0 && (
+
+                        {isLoading ? (
+                            <Spinner animation="grow" />
+                        ) : (
                             <>
                                 <h1>STATS</h1>
                                 {stats.map((data, index) => (
@@ -48,10 +54,10 @@ function Musik() {
                                         <p>{data.title}
                                             <span>
 
-                                            </span>
+                                        </span>
                                             <span className="tall" style={{ background: data.color, width: data.percentageString, animationDelay: `${index * 0.05}s` }}>
 
-                                            </span>
+                                        </span>
                                         </p>
                                     </div>
                                 ))}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BlogEntryItem } from '../../Types/types';
 import Container from 'react-bootstrap/Container';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Spinner } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
 import { API_BASE_URL } from '../../config';
 import CreateLiveAuftritt from './Components/CreateLiveAuftritt';
@@ -10,6 +10,7 @@ function AdminLiveAuftritte() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
     const [editableRow, setEditableRow] = useState<number | null>(null);
     const [isCreateLiveVisible, setCreateLiveVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const { token } = useAuth();
 
     useEffect(() => {
@@ -17,7 +18,10 @@ function AdminLiveAuftritte() {
             // Fetch data from the backend when the component mounts
             fetch(`${API_BASE_URL}/api/live`) // Replace with your actual API endpoint
                 .then((response) => response.json())
-                .then((data) => setLiveAuftritte(data))
+                .then((data) => {
+                    setLiveAuftritte(data);
+                    setIsLoading(false);
+                })
                 .catch((error) => console.error('Error fetching data:', error));
         }
     }, [liveAuftritte.length]);
@@ -95,150 +99,156 @@ function AdminLiveAuftritte() {
     const isRowEditable = (index: number) => index === editableRow;
 
     return (
-        <Container>
-            <Table responsive="xl">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Titel</th>
-                    <th>Beschreibung</th>
-                    <th>Tickets</th>
-                    <th>Bild</th>
-                    <th>Archiviert</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {liveAuftritte.map((item, index) => (
-                    <tr key={item.id}>
-                        <td>{item.id}</td>
-                        <td>
-                            {isRowEditable(index) ? (
-                                <input
-                                    type="text"
-                                    value={item.title}
-                                    onChange={(e) => {
-                                        const updatedLiveAuftritte = [...liveAuftritte];
-                                        updatedLiveAuftritte[index] = {
-                                            ...updatedLiveAuftritte[index],
-                                            title: e.target.value,
-                                        };
-                                        setLiveAuftritte(updatedLiveAuftritte);
-                                    }}
-                                />
-                            ) : (
-                                item.title
-                            )}
-                        </td>
-                        <td>
-                            {isRowEditable(index) ? (
-                                <input
-                                    type="text"
-                                    value={item.description}
-                                    onChange={(e) => {
-                                        const updatedLiveAuftritte = [...liveAuftritte];
-                                        updatedLiveAuftritte[index] = {
-                                            ...updatedLiveAuftritte[index],
-                                            description: e.target.value,
-                                        };
-                                        setLiveAuftritte(updatedLiveAuftritte);
-                                    }}
-                                />
-                            ) : (
-                                item.description
-                            )}
-                        </td>
-                        <td>
-                            {isRowEditable(index) ? (
-                                <input
-                                    type="text"
-                                    value={item.ticketLink}
-                                    onChange={(e) => {
-                                        const updatedLiveAuftritte = [...liveAuftritte];
-                                        updatedLiveAuftritte[index] = {
-                                            ...updatedLiveAuftritte[index],
-                                            ticketLink: e.target.value,
-                                        };
-                                        setLiveAuftritte(updatedLiveAuftritte);
-                                    }}
-                                />
-                            ) : (
-                                item.ticketLink
-                            )}
-                        </td>
-                        <td>
-                            {isRowEditable(index) ? (
-                                <input
-                                    type="file"
-                                    accept=".png, .jpg, .jpeg"
-                                    onChange={(e) => {
-                                        const updatedLiveAuftritte = [...liveAuftritte];
-                                        updatedLiveAuftritte[index] = {
-                                            ...updatedLiveAuftritte[index],
-                                            // @ts-ignore
-                                            image: e.target.files[0],
-                                        };
-                                        setLiveAuftritte(updatedLiveAuftritte);
-                                    }}
-                                />
-                            ) : item.imageSource ? (
-                                <img
-                                    src={`${API_BASE_URL}/api/${item.imageSource}`}
-                                    alt="Source"
-                                    style={{ maxWidth: '30%', maxHeight: '30%', width: '30', height: 'auto' }}
-                                />
-                            ) : (
-                                'Kein Bild'
-                            )}
-                        </td>
-
-                        <td>
-                            {isRowEditable(index) ? (
-                                <input
-                                    type="checkbox"
-                                    checked={item.archived}
-                                    onChange={(e) => {
-                                        // Update the archived field when the checkbox is toggled
-                                        const updatedLiveAuftritte = [...liveAuftritte];
-                                        updatedLiveAuftritte[index] = {
-                                            ...updatedLiveAuftritte[index],
-                                            archived: e.target.checked,
-                                        };
-                                        setLiveAuftritte(updatedLiveAuftritte);
-                                    }}
-                                />
-                            ) : (
-                                // Display "Yes" or "No" based on the archived state when not in edit mode
-                                item.archived ? "Yes" : "No"
-                            )}
-                        </td>
-
-                        <td>
-                            {isRowEditable(index) ? (
-                                <div>
-                                    <Button variant="success" onClick={() => handleSaveClick(index)}>Speichern</Button>
-                                    <Button variant="danger" className="ms-1" onClick={handleCancelClick}>Abbrechen</Button>
-                                </div>
-                            ) : (
-                                <div>
-                                    <Button variant="dark" onClick={() => handleEditClick(index)}>Bearbeiten</Button>
-                                    <Button variant="danger" className="ms-1" onClick={() => handleRemoveClick(index)}>Löschen</Button>
-                                </div>
-                            )}
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
-
-            {isCreateLiveVisible ? (
-                <CreateLiveAuftritt show={isCreateLiveVisible} onHide={handleOnHide} />
+        <>
+            {isLoading ? (
+                <Spinner animation="grow" />
             ) : (
-                <>
-                    <Button variant="success" onClick={() => setCreateLiveVisible(true)}>Erstellen</Button>
-                </>
+                <Container>
+                    <Table responsive="xl">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Titel</th>
+                            <th>Beschreibung</th>
+                            <th>Tickets</th>
+                            <th>Bild</th>
+                            <th>Archiviert</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {liveAuftritte.map((item, index) => (
+                            <tr key={item.id}>
+                                <td>{item.id}</td>
+                                <td>
+                                    {isRowEditable(index) ? (
+                                        <input
+                                            type="text"
+                                            value={item.title}
+                                            onChange={(e) => {
+                                                const updatedLiveAuftritte = [...liveAuftritte];
+                                                updatedLiveAuftritte[index] = {
+                                                    ...updatedLiveAuftritte[index],
+                                                    title: e.target.value,
+                                                };
+                                                setLiveAuftritte(updatedLiveAuftritte);
+                                            }}
+                                        />
+                                    ) : (
+                                        item.title
+                                    )}
+                                </td>
+                                <td>
+                                    {isRowEditable(index) ? (
+                                        <input
+                                            type="text"
+                                            value={item.description}
+                                            onChange={(e) => {
+                                                const updatedLiveAuftritte = [...liveAuftritte];
+                                                updatedLiveAuftritte[index] = {
+                                                    ...updatedLiveAuftritte[index],
+                                                    description: e.target.value,
+                                                };
+                                                setLiveAuftritte(updatedLiveAuftritte);
+                                            }}
+                                        />
+                                    ) : (
+                                        item.description
+                                    )}
+                                </td>
+                                <td>
+                                    {isRowEditable(index) ? (
+                                        <input
+                                            type="text"
+                                            value={item.ticketLink}
+                                            onChange={(e) => {
+                                                const updatedLiveAuftritte = [...liveAuftritte];
+                                                updatedLiveAuftritte[index] = {
+                                                    ...updatedLiveAuftritte[index],
+                                                    ticketLink: e.target.value,
+                                                };
+                                                setLiveAuftritte(updatedLiveAuftritte);
+                                            }}
+                                        />
+                                    ) : (
+                                        item.ticketLink
+                                    )}
+                                </td>
+                                <td>
+                                    {isRowEditable(index) ? (
+                                        <input
+                                            type="file"
+                                            accept=".png, .jpg, .jpeg"
+                                            onChange={(e) => {
+                                                const updatedLiveAuftritte = [...liveAuftritte];
+                                                updatedLiveAuftritte[index] = {
+                                                    ...updatedLiveAuftritte[index],
+                                                    // @ts-ignore
+                                                    image: e.target.files[0],
+                                                };
+                                                setLiveAuftritte(updatedLiveAuftritte);
+                                            }}
+                                        />
+                                    ) : item.imageSource ? (
+                                        <img
+                                            src={`${API_BASE_URL}/api/${item.imageSource}`}
+                                            alt="Source"
+                                            style={{ maxWidth: '30%', maxHeight: '30%', width: '30', height: 'auto' }}
+                                        />
+                                    ) : (
+                                        'Kein Bild'
+                                    )}
+                                </td>
+
+                                <td>
+                                    {isRowEditable(index) ? (
+                                        <input
+                                            type="checkbox"
+                                            checked={item.archived}
+                                            onChange={(e) => {
+                                                // Update the archived field when the checkbox is toggled
+                                                const updatedLiveAuftritte = [...liveAuftritte];
+                                                updatedLiveAuftritte[index] = {
+                                                    ...updatedLiveAuftritte[index],
+                                                    archived: e.target.checked,
+                                                };
+                                                setLiveAuftritte(updatedLiveAuftritte);
+                                            }}
+                                        />
+                                    ) : (
+                                        // Display "Yes" or "No" based on the archived state when not in edit mode
+                                        item.archived ? "Yes" : "No"
+                                    )}
+                                </td>
+
+                                <td>
+                                    {isRowEditable(index) ? (
+                                        <div>
+                                            <Button variant="success" onClick={() => handleSaveClick(index)}>Speichern</Button>
+                                            <Button variant="danger" className="ms-1" onClick={handleCancelClick}>Abbrechen</Button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <Button variant="dark" onClick={() => handleEditClick(index)}>Bearbeiten</Button>
+                                            <Button variant="danger" className="ms-1" onClick={() => handleRemoveClick(index)}>Löschen</Button>
+                                        </div>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
+
+                    {isCreateLiveVisible ? (
+                        <CreateLiveAuftritt show={isCreateLiveVisible} onHide={handleOnHide} />
+                    ) : (
+                        <>
+                            <Button variant="success" onClick={() => setCreateLiveVisible(true)}>Erstellen</Button>
+                        </>
+                    )}
+                </Container>
             )}
-        </Container>
+        </>
     );
 }
 

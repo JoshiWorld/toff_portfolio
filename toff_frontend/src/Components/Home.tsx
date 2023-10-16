@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import homeImage from '../Images/home.png';
 import Button from 'react-bootstrap/Button';
 import './Home.css';
+import { Spinner } from 'react-bootstrap';
 
 function Home() {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        setIsLoading(false);
+    }, []);
+
+
     const containerStyle: React.CSSProperties = {
         maxWidth: '100%',
         height: 'auto',
@@ -47,18 +55,24 @@ function Home() {
     }
 
     return (
-        <div style={containerStyle}>
-            <img src={homeImage} alt="TOFF Home" style={imageStyle} />
-            <div style={gradientOverlayStyle}></div>
+        <>
+            {isLoading ? (
+                <Spinner animation="grow" />
+            ) : (
+                <div style={containerStyle}>
+                    <img src={homeImage} alt="TOFF Home" style={imageStyle} />
+                    <div style={gradientOverlayStyle}></div>
 
-            <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" style={buttonStyleA} >
-                <Button className="responsive-button" style={buttonStyle}>JETZT HÖREN</Button>
-            </a>
+                    <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" style={buttonStyleA} >
+                        <Button className="responsive-button" style={buttonStyle}>JETZT HÖREN</Button>
+                    </a>
 
-            {/*<div className="overlay">*/}
-            {/*    <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" ></a>*/}
-            {/*</div>*/}
-        </div>
+                    {/*<div className="overlay">*/}
+                    {/*    <a href="https://open.spotify.com/intl-de/artist/35qJJVRDUxWBkMuZhkkCvz?si=v9bIR9JFSeuiIuyeTxt0nQ" target="_blank" rel="noopener noreferrer" ></a>*/}
+                    {/*</div>*/}
+                </div>
+            )}
+        </>
     );
 }
 

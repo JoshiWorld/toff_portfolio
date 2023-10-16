@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { BlogEntryItem } from '../Types/types';
 import Carousel from 'react-bootstrap/Carousel';
 import Button from 'react-bootstrap/Button';
-import { Image } from 'react-bootstrap';
+import { Image, Spinner } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import { API_BASE_URL } from '../config';
 
 function Live() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const BuyTickets: React.CSSProperties = {
         textDecoration: 'none',
@@ -55,55 +56,65 @@ function Live() {
             // Fetch data from the backend when the component mounts
             fetch(`${API_BASE_URL}/api/live`) // Replace with your actual API endpoint
                 .then((response) => response.json())
-                .then((data) => setLiveAuftritte(data))
+                .then((data) => {
+                    setLiveAuftritte(data);
+                    setIsLoading(false);
+                })
                 .catch((error) => console.error('Error fetching data:', error));
         }
     }, [liveAuftritte.length]);
 
-    return (
-        <Carousel>
-            {liveAuftritte.map((item, index) => (
-                <Carousel.Item key={index}>
-                    <div>
-                        {item.isVideo ? ( // Check if it's a video
-                            <video
-                                src={`${API_BASE_URL}/api/${item.mediaSource}`}
-                                autoPlay
-                                muted
-                                controls={false}
-                                loop
-                                style={imageStyle}
-                            />
-                        ) : ( // Otherwise, assume it's an image
-                            <Image src={`${API_BASE_URL}/api/${item.imageSource}`} alt="Image" className="img-fluid" style={imageStyle} />
-                        )}
-                    </div>
-                    <div style={gradientOverlayStyle}></div>
 
-                    <Carousel.Caption>
-                        <Container style={containerStyle}>
-                            <Card style={cardStyle}>
-                                <Card.Header>{item.title}</Card.Header>
-                                <Card.Body>
-                                    <Card.Text>
-                                        {item.description}
-                                    </Card.Text>
-                                    <Button variant="dark" style={BuyTickets}>
-                                        {item.ticketLink ? (
-                                            <a href={item.ticketLink} target="_blank" rel="noopener noreferrer" style={RemoveLinks}>
-                                                Tickets
-                                            </a>
-                                        ) : (
-                                            'Freier Eintritt'
-                                        )}
-                                    </Button>
-                                </Card.Body>
-                            </Card>
-                        </Container>
-                    </Carousel.Caption>
-                </Carousel.Item>
-            ))}
-        </Carousel>
+    return (
+        <>
+            {isLoading ? (
+                <Spinner animation="grow" />
+            ) : (
+                <Carousel>
+                    {liveAuftritte.map((item, index) => (
+                        <Carousel.Item key={index}>
+                            <div>
+                                {item.isVideo ? (
+                                    <video
+                                        src={`${API_BASE_URL}/api/${item.mediaSource}`}
+                                        autoPlay
+                                        muted
+                                        controls={false}
+                                        loop
+                                        style={imageStyle}
+                                    />
+                                ) : (
+                                    <Image src={`${API_BASE_URL}/api/${item.imageSource}`} alt="Image" className="img-fluid" style={imageStyle} />
+                                )}
+                            </div>
+                            <div style={gradientOverlayStyle}></div>
+
+                            <Carousel.Caption>
+                                <Container style={containerStyle}>
+                                    <Card style={cardStyle}>
+                                        <Card.Header>{item.title}</Card.Header>
+                                        <Card.Body>
+                                            <Card.Text>
+                                                {item.description}
+                                            </Card.Text>
+                                            <Button variant="dark" style={BuyTickets}>
+                                                {item.ticketLink ? (
+                                                    <a href={item.ticketLink} target="_blank" rel="noopener noreferrer" style={RemoveLinks}>
+                                                        Tickets
+                                                    </a>
+                                                ) : (
+                                                    'Freier Eintritt'
+                                                )}
+                                            </Button>
+                                        </Card.Body>
+                                    </Card>
+                                </Container>
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                    ))}
+                </Carousel>
+            )}
+        </>
     );
 }
 
