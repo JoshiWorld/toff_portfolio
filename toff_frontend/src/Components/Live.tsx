@@ -36,7 +36,10 @@ function Live() {
         zIndex: 1,
         width: "100%",
         height: "auto",
+        objectFit: "cover",
+        objectPosition: "center",
     };
+
 
     const cardStyle = {
         border: '0px', // Remove the border
@@ -61,18 +64,20 @@ function Live() {
         <Carousel>
             {liveAuftritte.map((item, index) => (
                 <Carousel.Item key={index}>
-                    {item.isVideo ? ( // Check if it's a video
-                        <video
-                            src={`${API_BASE_URL}/api/${item.mediaSource}`}
-                            autoPlay
-                            muted
-                            controls={false}
-                            loop
-                            style={imageStyle}
-                        />
-                    ) : ( // Otherwise, assume it's an image
-                        <Image src={`${API_BASE_URL}/api/${item.mediaSource}`} alt="Image" className="img-fluid" style={imageStyle} />
-                    )}
+                    <div>
+                        {item.isVideo ? ( // Check if it's a video
+                            <video
+                                src={`${API_BASE_URL}/api/${item.mediaSource}`}
+                                autoPlay
+                                muted
+                                controls={false}
+                                loop
+                                style={imageStyle}
+                            />
+                        ) : ( // Otherwise, assume it's an image
+                            <Image src={`${API_BASE_URL}/api/${item.imageSource}`} alt="Image" className="img-fluid" style={imageStyle} />
+                        )}
+                    </div>
                     <div style={gradientOverlayStyle}></div>
 
                     <Carousel.Caption>
