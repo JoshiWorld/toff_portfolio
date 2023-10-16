@@ -32,7 +32,8 @@ pool.query(`
     id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     value INT,
-    goal INT
+    goal INT,
+    color VARCHAR(255)
   );
 `, (error, results) => {
     if (error) {
