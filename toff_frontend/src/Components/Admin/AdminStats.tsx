@@ -155,8 +155,8 @@ function AdminStats() {
                             ) : (
                                 <div
                                     style={{
-                                        width: '20px', // Adjust the width and height as needed
-                                        height: '20px',
+                                        width: '100%',
+                                        height: '2vw',
                                         backgroundColor: item.color,
                                     }}
                                 ></div>
