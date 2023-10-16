@@ -44,7 +44,7 @@ function AdminLiveAuftritte() {
         });
     };
 
-    const handleSaveClick = (index: number, item: BlogEntryItem) => {
+    const handleSaveClick = (index: number) => {
         const updatedLiveAuftritte = [...liveAuftritte];
         const updatedItem = { ...updatedLiveAuftritte[index] };
         const image = updatedItem.image;
@@ -216,7 +216,7 @@ function AdminLiveAuftritte() {
                         <td>
                             {isRowEditable(index) ? (
                                 <div>
-                                    <Button variant="success" onClick={() => handleSaveClick(index, item)}>Speichern</Button>
+                                    <Button variant="success" onClick={() => handleSaveClick(index)}>Speichern</Button>
                                     <Button variant="danger" className="ms-1" onClick={handleCancelClick}>Abbrechen</Button>
                                 </div>
                             ) : (

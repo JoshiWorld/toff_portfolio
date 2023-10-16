@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 
 const pool = mysql.createPool({
@@ -37,7 +36,7 @@ pool.query(`
     goal INT,
     color VARCHAR(255)
   );
-`, (error, results) => {
+`, (error) => {
     if (error) {
         console.error('Error creating tables:', error);
         return;
@@ -408,23 +407,6 @@ function deleteStats(id, callback) {
         });
 
         connection.end();
-    });
-}
-
-
-
-/* MYSQL */
-
-
-function getConnection() {
-    return new Promise((resolve, reject) => {
-        pool.getConnection((err, connection) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(connection);
-        });
     });
 }
 
