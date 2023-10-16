@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './Musik.css';
 import {StatsItem} from "../Types/types";
 import {API_BASE_URL} from "../config";
+import MusikPlaylist from './MusikPlaylist';
 
 function Musik() {
     const [stats, setStats] = useState<StatsItem[]>([]);
@@ -31,6 +32,7 @@ function Musik() {
             <main>
                 <section id="tall">
                     <article className="tall">
+                        <MusikPlaylist />
                         <h1>STATS</h1>
                         {stats.map((data, index) => (
                             <div key={index}>
