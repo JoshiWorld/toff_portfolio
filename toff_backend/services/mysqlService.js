@@ -311,6 +311,7 @@ function getStats(callback) {
                         title: row.title,
                         value: row.value,
                         goal: row.goal,
+                        color: row.color,
                     };
 
                     stats.push(existingStat);
@@ -330,9 +331,9 @@ function createStats(stat, callback) {
             return;
         }
 
-        const insertQuery = `INSERT INTO stats (title, value, goal) 
-                       VALUES (?, ?, ?)`;
-        const values = [stat.title, stat.value, stat.goal];
+        const insertQuery = `INSERT INTO stats (title, value, goal, color) 
+                       VALUES (?, ?, ?, ?)`;
+        const values = [stat.title, stat.value, stat.goal, stat.color];
 
         // Execute the INSERT query
         connection.query(insertQuery, values, (error, results) => {
