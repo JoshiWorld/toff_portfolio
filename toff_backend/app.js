@@ -32,7 +32,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const corsOptions = {
-  origin: 'http://localhost:3001',
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ],
 };
 
 app.options('*', cors(corsOptions));
