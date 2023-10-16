@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import homeImage from '../Images/home.png';
+import homeImage from '../Images/home.jpg';
 import Button from 'react-bootstrap/Button';
 import './Home.css';
 import { Spinner } from 'react-bootstrap';
