@@ -5,7 +5,6 @@ import { Table, Button } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
 import CreateStats from './Components/CreateStats';
 import { API_BASE_URL } from '../../config';
-import { stat } from 'fs';
 
 function AdminStats() {
     const [stats, setStats] = useState<StatsItem[]>([]);
