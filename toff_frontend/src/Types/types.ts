@@ -6,6 +6,9 @@ export interface BlogEntryItem {
     imageSource?: string;
     archived: boolean;
     image?: File;
+    isVideo: boolean;
+    mediaSource: string;
+    media?: File;
 }
 
 export interface StatsItem {
