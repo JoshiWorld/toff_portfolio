@@ -61,7 +61,11 @@ function Live() {
         <Carousel>
             {liveAuftritte.map((item, index) => (
                 <Carousel.Item key={index}>
-                    <Image src={`${API_BASE_URL}/api/${item.imageSource}`} alt="Image" className="img-fluid" style={imageStyle} />
+                    {item.isVideo ? ( // Check if it's a video
+                        <video src={`${API_BASE_URL}/api/${item.mediaSource}`} controls style={imageStyle} />
+                    ) : ( // Otherwise, assume it's an image
+                        <Image src={`${API_BASE_URL}/api/${item.mediaSource}`} alt="Image" className="img-fluid" style={imageStyle} />
+                    )}
                     <div style={gradientOverlayStyle}></div>
 
                     <Carousel.Caption>
