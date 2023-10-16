@@ -35,10 +35,14 @@ function Musik() {
                         {stats.map((data, index) => (
                             <div key={index}>
                                 <p>{data.title}
-                                    <span style={{ textAlign: "right", alignItems: "center" }}><p>{data.goal}</p></span>
+                                    <span style={{ textAlign: "right", alignItems: "center" }}>
+                                        {/*// @ts-ignore*/}
+                                    <p>{data.goal.toLocaleString()}</p>
+                                </span>
                                     <span className="tall" style={{ background: data.color, width: data.percentageString, animationDelay: `${index * 0.05}s` }}>
-                                        <p style={{ textAlign: "left" }}>{data.value}</p>
-                                    </span>
+                                    {/*// @ts-ignore*/}
+                                        <p style={{ textAlign: "left" }}>{data.value.toLocaleString()}</p>
+                                </span>
                                 </p>
                             </div>
                         ))}
@@ -47,6 +51,7 @@ function Musik() {
             </main>
         </div>
     );
+
 }
 
 export default Musik;
