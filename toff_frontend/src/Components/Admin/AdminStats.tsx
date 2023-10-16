@@ -76,6 +76,7 @@ function AdminStats() {
                     <th>Titel</th>
                     <th>Wert</th>
                     <th>Ziel</th>
+                    <th>Farbe</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -137,6 +138,31 @@ function AdminStats() {
                                 item.goal
                             )}
                         </td>
+                        <td>
+                            {isRowEditable(index) ? (
+                                <input
+                                    type="color"
+                                    value={item.color}
+                                    onChange={(e) => {
+                                        const updatedStats = [...stats];
+                                        updatedStats[index] = {
+                                            ...updatedStats[index],
+                                            color: e.target.value, // Update the color based on the selected color
+                                        };
+                                        setStats(updatedStats);
+                                    }}
+                                />
+                            ) : (
+                                <div
+                                    style={{
+                                        width: '20px', // Adjust the width and height as needed
+                                        height: '20px',
+                                        backgroundColor: item.color,
+                                    }}
+                                ></div>
+                            )}
+                        </td>
+
 
                         <td>
                             {isRowEditable(index) ? (
