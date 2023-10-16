@@ -178,7 +178,7 @@ function AdminLiveAuftritte() {
                                     {isRowEditable(index) ? (
                                         <input
                                             type="file"
-                                            accept=".png, .jpg, .jpeg"
+                                            accept=".png, .jpg, .jpeg, .mp4, .mkv, .mov, .avi"
                                             onChange={(e) => {
                                                 const updatedLiveAuftritte = [...liveAuftritte];
                                                 updatedLiveAuftritte[index] = {
