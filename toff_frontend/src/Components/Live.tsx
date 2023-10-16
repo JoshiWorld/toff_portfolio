@@ -62,7 +62,14 @@ function Live() {
             {liveAuftritte.map((item, index) => (
                 <Carousel.Item key={index}>
                     {item.isVideo ? ( // Check if it's a video
-                        <video src={`${API_BASE_URL}/api/${item.mediaSource}`} controls style={imageStyle} />
+                        <video
+                            src={`${API_BASE_URL}/api/${item.mediaSource}`}
+                            autoPlay
+                            muted
+                            controls={false}
+                            loop
+                            style={imageStyle}
+                        />
                     ) : ( // Otherwise, assume it's an image
                         <Image src={`${API_BASE_URL}/api/${item.mediaSource}`} alt="Image" className="img-fluid" style={imageStyle} />
                     )}
