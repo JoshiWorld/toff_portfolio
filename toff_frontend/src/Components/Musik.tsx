@@ -33,26 +33,36 @@ function Musik() {
                 <section id="tall">
                     <article className="tall">
                         <MusikPlaylist />
-                        <h1>STATS</h1>
-                        {stats.map((data, index) => (
-                            <div key={index}>
-                                <p>{data.title}
-                                    <span style={{ textAlign: "right", alignItems: "center" }}>
-                                        {/*// @ts-ignore*/}
-                                    <p>{data.goal.toLocaleString()}</p>
-                                </span>
-                                    <span className="tall" style={{ background: data.color, width: data.percentageString, animationDelay: `${index * 0.05}s` }}>
-                                    {/*// @ts-ignore*/}
-                                        <p style={{ textAlign: "left" }}>{data.value.toLocaleString()}</p>
-                                </span>
-                                </p>
-                            </div>
-                        ))}
+                        {stats.length !== 0 && (
+                            <>
+                                <h1>STATS</h1>
+                                {stats.map((data, index) => (
+                                    <div key={index}>
+                                        <div className="stats-info">
+                                            {/*// @ts-ignore*/}
+                                            <p>{data.value.toLocaleString()}</p>
+                                            {/*// @ts-ignore*/}
+                                            <p>{data.goal.toLocaleString()}</p>
+                                        </div>
+
+                                        <p>{data.title}
+                                            <span>
+
+                                            </span>
+                                            <span className="tall" style={{ background: data.color, width: data.percentageString, animationDelay: `${index * 0.05}s` }}>
+
+                                            </span>
+                                        </p>
+                                    </div>
+                                ))}
+                            </>
+                        )}
                     </article>
                 </section>
             </main>
         </div>
     );
+
 
 }
 

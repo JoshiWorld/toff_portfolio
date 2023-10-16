@@ -54,6 +54,20 @@ section article.tall div span:nth-child(1) {
     width: 100%;
 }
 
+.stats-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px; /* Adjust this margin as needed to control the vertical spacing between title and goal/value */
+}
+
+.stats-info p {
+    margin: 0; /* Remove default margin to ensure proper alignment */
+    /* Additional styling for text, such as font size or color */
+}
+
+
+
 section article.tall div span:nth-child(2) {
     top: 0;
     bottom: 0;
