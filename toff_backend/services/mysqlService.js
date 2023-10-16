@@ -20,7 +20,9 @@ pool.query(`
     description VARCHAR(255) NOT NULL,
     ticketLink VARCHAR(255),
     imageSource VARCHAR(255),
-    archived BOOLEAN DEFAULT FALSE
+    archived BOOLEAN DEFAULT FALSE,
+    isVideo BOOLEAN NOT NULL,
+    mediaSource VARCHAR(255)
   );
 
   CREATE TABLE IF NOT EXISTS master (
@@ -178,6 +180,8 @@ function getLiveBlogs(callback) {
                         ticketLink: row.ticketLink,
                         imageSource: row.imageSource,
                         archived: row.archived,
+                        isVideo: row.isVideo,
+                        mediaSource: row.mediaSource,
                     };
 
                     liveblogs.push(existingBlog);
@@ -197,9 +201,9 @@ function createLiveBlog(liveblog, callback) {
             return;
         }
 
-        const insertQuery = `INSERT INTO live (title, description, ticketLink, imageSource) 
-                       VALUES (?, ?, ?, ?)`;
-        const values = [liveblog.title, liveblog.description, liveblog.ticketLink, liveblog.imageSource];
+        const insertQuery = `INSERT INTO live (title, description, ticketLink, imageSource, isVideo, mediaSource) 
+                       VALUES (?, ?, ?, ?, ?, ?)`;
+        const values = [liveblog.title, liveblog.description, liveblog.ticketLink, liveblog.imageSource, liveblog.isVideo, liveblog.mediaSource];
 
         // Execute the INSERT query
         connection.query(insertQuery, values, (error, results) => {

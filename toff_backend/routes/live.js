@@ -31,10 +31,20 @@ router.get('/', function(req, res) {
 
 router.post('/create', verifyToken, upload.single('image'), function(req, res) {
     const createdItem = JSON.parse(req.body.liveblog);
+    createdItem.isVideo = false;
 
     if (req.file) {
-        const imageSource = req.file.path;
-        createdItem.imageSource = imageSource;
+        console.log('FILE EXISTS');
+        const fileExtension = req.file.originalname.split('.').pop().toLowerCase();
+        const videoExtensions = ['mp4', 'avi', 'mov', 'mkv'];
+
+        if (videoExtensions.includes(fileExtension)) {
+            createdItem.mediaSource = req.file.path;
+            createdItem.isVideo = true;
+        } else {
+            createdItem.imageSource = req.file.path;
+            createdItem.isVideo = false;
+        }
     }
 
     mysqlService.createLiveBlog(createdItem, (error, results) => {
@@ -62,9 +72,16 @@ router.put('/:id', verifyToken,  upload.single('image'), function (req, res) {
     const updatedItem = JSON.parse(req.body.item);
 
     if (req.file) {
-        const imageSource = req.file.path;
+        const fileExtension = req.file.originalname.split('.').pop().toLowerCase();
+        const videoExtensions = ['mp4', 'avi', 'mov', 'mkv'];
 
-        updatedItem.imageSource = imageSource;
+        if (videoExtensions.includes(fileExtension)) {
+            updatedItem.mediaSource = req.file.path;
+            updatedItem.isVideo = true;
+        } else {
+            updatedItem.imageSource = req.file.path;
+            updatedItem.isVideo = false;
+        }
     }
 
     mysqlService.updateLiveBlog(req.params.id, updatedItem, (error, results) => {
