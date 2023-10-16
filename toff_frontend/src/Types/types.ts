@@ -13,4 +13,5 @@ export interface StatsItem {
     title: string;
     value?: number;
     goal?: number;
+    color?: string;
 }
