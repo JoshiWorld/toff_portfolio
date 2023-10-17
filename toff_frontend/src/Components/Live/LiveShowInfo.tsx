@@ -20,6 +20,14 @@ function LiveShowInfo({ show, onHide, item }) {
                 <Button variant="secondary" onClick={onHide}>
                     Schließen
                 </Button>
+                {item.ticketLink && (
+                    <Button
+                        variant="primary"
+                        onClick={() => window.open(item.ticketLink, "_blank")}
+                    >
+                        Tickets kaufen
+                    </Button>
+                )}
             </Modal.Footer>
         </Modal>
     );
