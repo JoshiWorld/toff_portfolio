@@ -4,6 +4,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { Spinner } from 'react-bootstrap';
 import { API_BASE_URL } from '../config';
 import CarouselItemContainer from "./Live/CarouselItemContainer";
+import LiveEmptyPage from "./Live/LiveEmptyPage";
 
 function Live() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
@@ -29,7 +30,7 @@ function Live() {
                 <Spinner animation="grow" />
             ) : (
                 <>
-                    {liveAuftritte.length !== 0 && (
+                    {liveAuftritte.length !== 0 ? (
                         <>
                             <Carousel>
                                 {liveAuftritte.map((item, index) => (
@@ -37,6 +38,8 @@ function Live() {
                                 ))}
                             </Carousel>
                         </>
+                    ) : (
+                        <LiveEmptyPage />
                     )}
                 </>
             )}
