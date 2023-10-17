@@ -48,7 +48,7 @@ function Musik() {
                                 </div>
                                 {stats.length !== 0 && (
                                     <>
-                                        <h1>STATS</h1>
+                                        <h1>MEILENSTEINE</h1>
                                         {stats.map((data, index) => (
                                             <div key={index}>
                                                 <div className="stats-info">
