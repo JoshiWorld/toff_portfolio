@@ -24,7 +24,7 @@ section {
 }
 
 section article.tall {
-    width: 500px;
+    width: 80vw;
     height: auto;
 }
 
@@ -58,12 +58,11 @@ section article.tall div span:nth-child(1) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 5px; /* Adjust this margin as needed to control the vertical spacing between title and goal/value */
+    margin-top: 5px;
 }
 
 .stats-info p {
-    margin: 0; /* Remove default margin to ensure proper alignment */
-    /* Additional styling for text, such as font size or color */
+    margin: 0;
 }
 
 
@@ -78,21 +77,6 @@ section article.tall div span:nth-child(2) {
     position: absolute;
     z-index: -1;
 }
-
-/*section article.tall div:nth-child(1) span:nth-child(2) {*/
-/*    width: 95%;*/
-/*    animation-delay: 0s;*/
-/*}*/
-
-/*section article.tall div:nth-child(2) span:nth-child(2) {*/
-/*    width: 80%;*/
-/*    animation-delay: 0.05s;*/
-/*}*/
-
-/*section article.tall div:nth-child(3) span:nth-child(2) {*/
-/*    width: 90%;*/
-/*    animation-delay: 0.1s;*/
-/*}*/
 
 section::before {
     position: absolute;
@@ -130,4 +114,11 @@ section::after {
         left: 0;
         opacity: 1;
     }
+}
+
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Makes the container take the full viewport height */
 }
