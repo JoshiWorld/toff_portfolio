@@ -4,11 +4,6 @@ import Carousel from 'react-bootstrap/Carousel';
 import {Image, Spinner} from 'react-bootstrap';
 import { API_BASE_URL } from '../config';
 import LiveEmptyPage from "./Live/LiveEmptyPage";
-import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import { Link } from 'react-router-dom';
-import CreateStats from './Admin/Components/CreateStats';
 import LiveShowInfo from './Live/LiveShowInfo';
 
 function Live() {
