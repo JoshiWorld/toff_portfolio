@@ -7,7 +7,6 @@ import LiveEmptyPage from "./Live/LiveEmptyPage";
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import ImgOverlayExample from "./Live/ImgOverlayExample";
 
 function Live() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
@@ -58,61 +57,63 @@ function Live() {
 
 
     return (
-        <div className="container mt-3">
-            {isLoading ? (
-                <Spinner animation="grow" />
-            ) : (
-                <>
-                    {liveAuftritte.length !== 0 ? (
-                        <Carousel style={{ boxShadow: '10px 10px 10px rgba(0, 0, 0, 0.4)', borderRadius: "5px", }}>
-                            {liveAuftritte.map((item, index) => (
-                                <Carousel.Item key={index}>
-                                    <div>
-                                        {item.isVideo ? (
-                                            <video
-                                                src={`${API_BASE_URL}/api/${item.mediaSource}`}
-                                                autoPlay
-                                                muted
-                                                controls={false}
-                                                loop
-                                                style={imageStyle}
-                                            />
-                                        ) : (
-                                            <Image src={`${API_BASE_URL}/api/${item.imageSource}`} alt="Livesource" className="img-fluid"
-                                                   style={imageStyle}/>
-                                        )}
-                                    </div>
+        <div className="container-fluid">
+            <div className="container pt-3">
+                {isLoading ? (
+                    <Spinner animation="grow" />
+                ) : (
+                    <>
+                        {liveAuftritte.length !== 0 ? (
+                            <Carousel style={{ boxShadow: '10px 10px 10px rgba(0, 0, 0, 0.4)', borderRadius: "5px", }}>
+                                {liveAuftritte.map((item, index) => (
+                                    <Carousel.Item key={index}>
+                                        <div>
+                                            {item.isVideo ? (
+                                                <video
+                                                    src={`${API_BASE_URL}/api/${item.mediaSource}`}
+                                                    autoPlay
+                                                    muted
+                                                    controls={false}
+                                                    loop
+                                                    style={imageStyle}
+                                                />
+                                            ) : (
+                                                <Image src={`${API_BASE_URL}/api/${item.imageSource}`} alt="Livesource" className="img-fluid"
+                                                       style={imageStyle}/>
+                                            )}
+                                        </div>
 
-                                    <Carousel.Caption>
-                                        <Container style={containerStyle}>
-                                            <Card style={cardStyle}>
-                                                <Card.Header>{item.title}</Card.Header>
-                                                <Card.Body>
-                                                    <Card.Text>
-                                                        {item.description}
-                                                    </Card.Text>
-                                                    <Button variant="dark" style={BuyTickets}>
-                                                        {item.ticketLink ? (
-                                                            <a href={item.ticketLink} target="_blank" rel="noopener noreferrer"
-                                                               style={RemoveLinks}>
-                                                                Tickets
-                                                            </a>
-                                                        ) : (
-                                                            'Freier Eintritt'
-                                                        )}
-                                                    </Button>
-                                                </Card.Body>
-                                            </Card>
-                                        </Container>
-                                    </Carousel.Caption>
-                                </Carousel.Item>
-                            ))}
-                        </Carousel>
-                    ) : (
-                        <LiveEmptyPage />
-                    )}
-                </>
-            )}
+                                        <Carousel.Caption>
+                                            <Container style={containerStyle}>
+                                                <Card style={cardStyle}>
+                                                    <Card.Header>{item.title}</Card.Header>
+                                                    <Card.Body>
+                                                        <Card.Text>
+                                                            {item.description}
+                                                        </Card.Text>
+                                                        <Button variant="dark" style={BuyTickets}>
+                                                            {item.ticketLink ? (
+                                                                <a href={item.ticketLink} target="_blank" rel="noopener noreferrer"
+                                                                   style={RemoveLinks}>
+                                                                    Tickets
+                                                                </a>
+                                                            ) : (
+                                                                'Freier Eintritt'
+                                                            )}
+                                                        </Button>
+                                                    </Card.Body>
+                                                </Card>
+                                            </Container>
+                                        </Carousel.Caption>
+                                    </Carousel.Item>
+                                ))}
+                            </Carousel>
+                        ) : (
+                            <LiveEmptyPage />
+                        )}
+                    </>
+                )}
+            </div>
         </div>
     );
 }
