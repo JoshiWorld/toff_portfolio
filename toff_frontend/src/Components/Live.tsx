@@ -7,6 +7,7 @@ import LiveEmptyPage from "./Live/LiveEmptyPage";
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import ImgOverlayExample from "./Live/ImgOverlayExample";
 
 function Live() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
