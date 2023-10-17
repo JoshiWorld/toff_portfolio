@@ -235,6 +235,8 @@ function updateLiveBlog(id, updatedData, callback) {
 
         // Execute the SQL query with the provided data
         connection.query(updateQuery, [updatedData, id], (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error updating live entry:', error);
                 callback(error, null);
@@ -243,8 +245,6 @@ function updateLiveBlog(id, updatedData, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
@@ -263,6 +263,8 @@ function deleteLiveBlog(id, callback) {
 
         // Execute the SQL query with the provided ID
         connection.query(deleteQuery, [id], (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error deleting live entry:', error);
                 callback(error, null);
@@ -271,8 +273,6 @@ function deleteLiveBlog(id, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
@@ -369,6 +369,8 @@ function updateStats(id, updatedData, callback) {
 
         // Execute the SQL query with the provided data
         connection.query(updateQuery, [updatedData, id], (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error updating stats entry:', error);
                 callback(error, null);
@@ -377,8 +379,6 @@ function updateStats(id, updatedData, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
@@ -397,6 +397,8 @@ function deleteStats(id, callback) {
 
         // Execute the SQL query with the provided ID
         connection.query(deleteQuery, [id], (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error deleting stats entry:', error);
                 callback(error, null);
@@ -405,8 +407,6 @@ function deleteStats(id, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
