@@ -14,7 +14,7 @@ import LiveShowInfo from './Live/LiveShowInfo';
 function Live() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [showInfo, setShowInfo] = useState(false);
+    const [showInfo, setShowInfo] = useState(new Array(liveAuftritte.length).fill(false));
 
     useEffect(() => {
         if (liveAuftritte.length === 0) {
@@ -37,9 +37,11 @@ function Live() {
         objectPosition: "center",
     };
 
-    const handleOnHide = () => {
-        setShowInfo(false);
-    }
+    const handleOnHide = (index: number) => {
+        const updatedShowInfo = [...showInfo];
+        updatedShowInfo[index] = false;
+        setShowInfo(updatedShowInfo);
+    };
 
     return (
         <div>
@@ -53,7 +55,11 @@ function Live() {
                                 {liveAuftritte.map((item, index) => (
                                     <Carousel.Item key={index}>
                                         <div>
-                                            <div onClick={() => setShowInfo(true)}>
+                                            <div onClick={() => {
+                                                const updatedShowInfo = [...showInfo];
+                                                updatedShowInfo[index] = true;
+                                                setShowInfo(updatedShowInfo);
+                                            }}>
                                                 {item.isVideo ? (
                                                     <video
                                                         src={`${API_BASE_URL}/api/${item.mediaSource}`}
@@ -73,11 +79,12 @@ function Live() {
                                                 )}
                                             </div>
 
-                                            {showInfo && (
-                                                <LiveShowInfo show={showInfo} onHide={handleOnHide} item={item} />
+                                            {showInfo[index] && (
+                                                <LiveShowInfo show={showInfo[index]} onHide={() => handleOnHide(index)} item={item} />
                                             )}
                                         </div>
                                     </Carousel.Item>
+
                                 ))}
                             </Carousel>
                         ) : (
