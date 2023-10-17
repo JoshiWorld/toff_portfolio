@@ -54,9 +54,16 @@ jobs:
       - name: Initialize Backend
         working-directory: toff_backend/
         run: npm ci
+
+      - name: Reload PM2
+        working-directory: toff_backend/
+        run: pm2 reload all
   deploy:
     runs-on: self-hosted
     needs: build # this job depends on "test" having finished
+    strategy:
+      matrix:
+        node-version: [ 16.20.0 ]
     steps:
       - name: Deploying to Test Server
         #uses: appleboy/ssh-action@master # An action made to control Linux servers
