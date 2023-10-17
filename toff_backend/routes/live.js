@@ -78,9 +78,11 @@ router.put('/:id', verifyToken,  upload.single('image'), function (req, res) {
         if (videoExtensions.includes(fileExtension)) {
             updatedItem.mediaSource = req.file.path;
             updatedItem.isVideo = true;
+            updatedItem.imageSource = null;
         } else {
             updatedItem.imageSource = req.file.path;
             updatedItem.isVideo = false;
+            updatedItem.mediaSource = null;
         }
     }
 
