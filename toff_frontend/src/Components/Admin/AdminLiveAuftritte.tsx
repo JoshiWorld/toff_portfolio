@@ -140,8 +140,7 @@ function AdminLiveAuftritte() {
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
-                                        <input
-                                            type="text"
+                                        <textarea
                                             value={item.description}
                                             onChange={(e) => {
                                                 const updatedLiveAuftritte = [...liveAuftritte];

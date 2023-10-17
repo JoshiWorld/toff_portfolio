@@ -47,8 +47,8 @@ function Musik() {
                                     <MusikPlaylist />
                                 </div>
                                 {stats.length !== 0 && (
-                                    <>
-                                        <h1>STATS</h1>
+                                    <div className="mt-4">
+                                        <h1>MEILENSTEINE</h1>
                                         {stats.map((data, index) => (
                                             <div key={index}>
                                                 <div className="stats-info">
@@ -71,7 +71,7 @@ function Musik() {
                                                 </p>
                                             </div>
                                         ))}
-                                    </>
+                                    </div>
                                 )}
                             </>
                         )}
