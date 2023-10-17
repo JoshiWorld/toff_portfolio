@@ -32,35 +32,39 @@ function Musik() {
             <main>
                 <section id="tall">
                     <article className="tall">
-                        <MusikPlaylist />
-
                         {isLoading ? (
                             <Spinner animation="grow" />
                         ) : (
                             <>
+                                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <MusikPlaylist />
+                                </div>
                                 {stats.length !== 0 && (
-                                  <>
-                                      <h1>STATS</h1>
-                                      {stats.map((data, index) => (
-                                          <div key={index}>
-                                              <div className="stats-info">
-                                                  {/*// @ts-ignore*/}
-                                                  <p>{data.value.toLocaleString()}</p>
-                                                  {/*// @ts-ignore*/}
-                                                  <p>{data.goal.toLocaleString()}</p>
-                                              </div>
-
-                                              <p>{data.title}
-                                                  <span>
-
-                                        </span>
-                                                  <span className="tall" style={{ background: data.color, width: data.percentageString, animationDelay: `${index * 0.05}s` }}>
-
-                                        </span>
-                                              </p>
-                                          </div>
-                                      ))}
-                                  </>
+                                    <>
+                                        <h1>STATS</h1>
+                                        {stats.map((data, index) => (
+                                            <div key={index}>
+                                                <div className="stats-info">
+                                                    {/*// @ts-ignore*/}
+                                                    <p>{data.value.toLocaleString()}</p>
+                                                    {/*// @ts-ignore*/}
+                                                    <p>{data.goal.toLocaleString()}</p>
+                                                </div>
+                                                <p>
+                                                    {data.title}
+                                                    <span></span>
+                                                    <span
+                                                        className="tall"
+                                                        style={{
+                                                            background: data.color,
+                                                            width: data.percentageString,
+                                                            animationDelay: `${index * 0.05}s`,
+                                                        }}
+                                                    ></span>
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </>
                                 )}
                             </>
                         )}
@@ -69,6 +73,7 @@ function Musik() {
             </main>
         </div>
     );
+
 
 
 }

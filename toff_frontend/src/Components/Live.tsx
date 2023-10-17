@@ -57,14 +57,14 @@ function Live() {
 
 
     return (
-        <div className="container-fluid">
-            <div className="container pt-3">
+        <div>
+            <div>
                 {isLoading ? (
                     <Spinner animation="grow" />
                 ) : (
                     <>
                         {liveAuftritte.length !== 0 ? (
-                            <Carousel style={{ boxShadow: '10px 10px 10px rgba(0, 0, 0, 0.4)', borderRadius: "5px", }}>
+                            <Carousel>
                                 {liveAuftritte.map((item, index) => (
                                     <Carousel.Item key={index}>
                                         <div>
