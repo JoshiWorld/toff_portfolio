@@ -4,7 +4,6 @@ const mysqlService = require('../services/mysqlService');
 const { verifyToken } = require('../services/jwtService');
 const { upload, deleteFile } = require('../services/fileService');
 
-
 /* GET users listing. */
 router.get('/', function(req, res) {
     mysqlService.getLiveBlogs((error, results) => {
