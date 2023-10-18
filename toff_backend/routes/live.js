@@ -45,13 +45,23 @@ router.post('/create', verifyToken, upload.single('image'), function(req, res) {
 });
 
 router.delete('/:id', verifyToken, function(req, res) {
-    mysqlService.deleteLiveBlog(req.params.id, (error, results) => {
+    mysqlService.getLiveBlogById(req.params.id, (error, result) => {
         if(error) {
             res.status(500).json({ message: 'Internal server error', error: error });
             return;
         }
 
-        res.json(results);
+        if(result.imageSource) deleteFile(result.imageSource);
+        if(result.mediaSource) deleteFile(result.mediaSource);
+
+        mysqlService.deleteLiveBlog(req.params.id, (error, results) => {
+            if(error) {
+                res.status(500).json({ message: 'Internal server error', error: error });
+                return;
+            }
+
+            res.json(results);
+        });
     });
 });
 

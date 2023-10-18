@@ -192,6 +192,45 @@ function getLiveBlogs(callback) {
     });
 }
 
+function getLiveBlogById(id, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const query = 'SELECT * FROM live WHERE id = ' + id;
+
+        connection.query(query, (error, result) => {
+            connection.release(); // Release the connection back to the pool
+
+            if (error) {
+                console.error('Error executing query:', error);
+                callback(error, null);
+                return;
+            }
+
+            let liveblog;
+
+            if(result) {
+                liveblog = {
+                    id: result.id,
+                    title: result.title,
+                    description: result.description,
+                    ticketLink: result.ticketLink,
+                    imageSource: result.imageSource,
+                    archived: result.archived,
+                    isVideo: result.isVideo,
+                    mediaSource: result.mediaSource,
+                };
+
+                callback(null, liveblog);
+            }
+        });
+    });
+}
+
 function createLiveBlog(liveblog, callback) {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -423,6 +462,7 @@ module.exports = {
     createLiveBlog,
     updateLiveBlog,
     deleteLiveBlog,
+    getLiveBlogById,
 
     // STATS
     getStats,
