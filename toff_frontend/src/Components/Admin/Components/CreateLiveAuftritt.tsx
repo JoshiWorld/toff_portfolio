@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { InputGroup } from 'react-bootstrap';
+import Spinner from 'react-bootstrap/Spinner';
 import { useAuth } from '../../../Utils/AuthProvider';
 import { API_BASE_URL } from '../../../config';
 
@@ -16,17 +17,17 @@ function CreateLiveAuftritt({ show, onHide }) {
         archived: false,
         image: File,
     });
-    const {token} = useAuth();
+    const [isUploading, setIsUploading] = useState(false);
+    const { token } = useAuth();
 
     // @ts-ignore
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
 
-        // Check if the input is a file input
-        if (type === "file") {
+        if (type === 'file') {
             setFormData({
                 ...formData,
-                [name]: files[0], // Use the selected file(s) from the input
+                [name]: files[0],
             });
         } else {
             setFormData({
@@ -41,11 +42,13 @@ function CreateLiveAuftritt({ show, onHide }) {
         // @ts-ignore
         delete formData.image;
 
+        setIsUploading(true);
+
         fetch(`${API_BASE_URL}/api/live/create`, {
             method: 'POST',
             // @ts-ignore
             headers: {
-                'authorization': token,
+                authorization: token,
             },
             body: (() => {
                 const formDataNew = new FormData();
@@ -65,10 +68,11 @@ function CreateLiveAuftritt({ show, onHide }) {
             })
             .catch((error) => {
                 console.error('Error sending data to the backend:', error);
+            })
+            .finally(() => {
+                setIsUploading(false);
             });
     };
-
-
 
     return (
         <Modal show={show} onHide={onHide} backdrop="static" keyboard={false}>
@@ -120,10 +124,9 @@ function CreateLiveAuftritt({ show, onHide }) {
                         <Form.Control
                             type="file"
                             name="image"
-                            onChange={(e) => handleChange(e)} // Handle the file selection in your handleChange function
+                            onChange={(e) => handleChange(e)}
                         />
                     </Form.Group>
-
                 </Form>
             </Modal.Body>
             <Modal.Footer>
@@ -131,7 +134,13 @@ function CreateLiveAuftritt({ show, onHide }) {
                     Abbrechen
                 </Button>
                 <Button variant="success" onClick={handleAddLive}>
-                    Hinzufügen
+                    {isUploading ? ( // Render the Spinner while uploading
+                        <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    ) : (
+                        'Hinzufügen'
+                    )}
                 </Button>
             </Modal.Footer>
         </Modal>
