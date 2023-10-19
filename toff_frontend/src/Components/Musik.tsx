@@ -30,7 +30,7 @@ function Musik() {
     return (
         <div className="charts">
             <div className="background-video-container">
-                <video className="background-video" autoPlay muted loop>
+                <video className="background-video" autoPlay muted loop controls={false}>
                     <source src={`${API_BASE_URL}/api/uploads/MUSIC_BACKGROUND.mp4`} type="video/mp4" />
                     Video not supported by your browser.
                 </video>

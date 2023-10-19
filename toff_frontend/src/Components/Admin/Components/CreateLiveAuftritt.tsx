@@ -42,6 +42,8 @@ function CreateLiveAuftritt({ show, onHide }) {
         // @ts-ignore
         delete formData.image;
 
+        formData.description = formData.description.replace(/\n/g, '<br>');
+
         setIsUploading(true);
 
         fetch(`${API_BASE_URL}/api/live/create`, {

@@ -135,3 +135,11 @@ section::after {
     align-items: center;
     height: 100vh; /* Makes the container take the full viewport height */
 }
+
+@media (max-width: 768px) {
+    section::before,
+    section::after {
+        width: 200px; /* Adjust the desired smaller width */
+        height: 200px; /* Adjust the desired smaller height */
+    }
+}
