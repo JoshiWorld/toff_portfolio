@@ -1,10 +1,12 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
 
 // @ts-ignore
 function LiveShowInfo({ show, onHide, item }) {
+    const createMarkup = () => {
+        return { __html: item.description };
+    };
 
     return (
         <Modal show={show} onHide={onHide} backdrop="static" keyboard={false}>
@@ -12,9 +14,7 @@ function LiveShowInfo({ show, onHide, item }) {
                 <Modal.Title>{item.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
-                    <p>{item.description}</p>
-                </Form>
+                <div dangerouslySetInnerHTML={createMarkup()} />
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHide}>

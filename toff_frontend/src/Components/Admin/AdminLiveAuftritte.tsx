@@ -152,7 +152,10 @@ function AdminLiveAuftritte() {
                                             }}
                                         />
                                     ) : (
-                                        item.description
+                                        <div
+                                            dangerouslySetInnerHTML={{ __html: item.description.replace(/\n/g, '<br />') }}
+                                            style={{ whiteSpace: 'pre-line' }}
+                                        />
                                     )}
                                 </td>
                                 <td>
