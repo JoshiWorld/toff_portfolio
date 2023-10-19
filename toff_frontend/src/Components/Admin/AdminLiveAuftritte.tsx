@@ -54,6 +54,8 @@ function AdminLiveAuftritte() {
         const image = updatedItem.image;
         delete updatedItem.image;
 
+        updatedItem.description = updatedItem.description.replace(/\n/g, '<br>');
+
         fetch(`${API_BASE_URL}/api/live/${updatedItem.id}`, {
             method: 'PUT',
             // @ts-ignore
