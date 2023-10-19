@@ -141,7 +141,7 @@ function AdminLiveAuftritte() {
                                 <td>
                                     {isRowEditable(index) ? (
                                         <textarea
-                                            value={item.description}
+                                            value={item.description.replace(/<br\s*\/?>/g, '\n')} // Convert <br> tags to newlines
                                             onChange={(e) => {
                                                 const updatedLiveAuftritte = [...liveAuftritte];
                                                 updatedLiveAuftritte[index] = {
