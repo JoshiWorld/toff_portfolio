@@ -78,6 +78,10 @@ section article.tall div span:nth-child(1) {
     margin: 0;
 }
 
+#title {
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+}
+
 
 
 section article.tall div span:nth-child(2) {

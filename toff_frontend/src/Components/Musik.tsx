@@ -57,7 +57,7 @@ function Musik() {
                                                     {/*// @ts-ignore*/}
                                                     <p>{data.goal.toLocaleString()}</p>
                                                 </div>
-                                                <p>
+                                                <p id="title">
                                                     {data.title}
                                                     <span></span>
                                                     <span
