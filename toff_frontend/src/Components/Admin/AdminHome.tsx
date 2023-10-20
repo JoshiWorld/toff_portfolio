@@ -4,6 +4,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 
 import AdminStats from './AdminStats';
 import AdminLiveAuftritte from './AdminLiveAuftritte';
+import AdminKontakt from './AdminKontakt';
 
 function AdminHome() {
     const location = useLocation();
@@ -17,6 +18,9 @@ function AdminHome() {
                 break;
             case '/admin/live':
                 setActiveComponent(<AdminLiveAuftritte />);
+                break;
+            case '/admin/contact':
+                setActiveComponent(<AdminKontakt />);
                 break;
             default:
                 navigate('/admin/stats'); // Now the navigate function is available
@@ -41,6 +45,14 @@ function AdminHome() {
                             className={`nav-link ${location.pathname === '/admin/live' ? 'active' : ''}`}
                         >
                             Live-Auftritte
+                        </Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Link
+                            to="/admin/contact"
+                            className={`nav-link ${location.pathname === '/admin/contact' ? 'active' : ''}`}
+                        >
+                            E-Mail
                         </Link>
                     </Nav.Item>
                 </Nav>
