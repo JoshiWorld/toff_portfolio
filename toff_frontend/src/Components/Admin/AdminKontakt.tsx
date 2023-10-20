@@ -27,7 +27,7 @@ function AdminKontakt() {
                 setIsLoading(false);
             })
             .catch((error) => console.error('Error fetching data:', error));
-    }, []);
+    }, [token]);
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);

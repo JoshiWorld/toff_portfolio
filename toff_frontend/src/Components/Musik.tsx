@@ -65,21 +65,21 @@ function Musik() {
                                         {stats.length > 3 && (
                                             <Pagination className="justify-content-between pagination-lg arrowsPosition">
                                                 <div className="arrows-container">
-                                                    <a
+                                                    <button
                                                         className="pageArrows left-arrow"
                                                         onClick={() => handlePageChange(currentPage - 1)}
                                                     >
                                                         &lt;
-                                                    </a>
+                                                    </button>
                                                 </div>
 
                                                 <div className="arrows-container">
-                                                    <a
+                                                    <button
                                                         className="pageArrows right-arrow"
                                                         onClick={() => handlePageChange(currentPage + 1)}
                                                     >
                                                         &gt;
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             </Pagination>
                                         )}
