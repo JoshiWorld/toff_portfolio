@@ -30,6 +30,9 @@ jobs:
           echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> .env
           echo "SQL_DB=${{ secrets.SQL_DB }}" >> .env
           echo "SQL_USER=${{ secrets.SQL_USER }}" >> .env
+          echo "MAIL_SMTP_HOST=${{ secrets.MAIL_SMTP_HOST }}" >> .env
+          echo "MAIL_SMTP_PORT=${{ secrets.MAIL_SMTP_PORT }}" >> .env
+          echo "CYPHER_KEY=${{ secrets.CYPHER_KEY }}" >> .env
         working-directory: toff_backend/
 
       - name: Create symbolic link for uploads
