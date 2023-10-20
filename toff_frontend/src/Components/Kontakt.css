@@ -1,0 +1,108 @@
+.charts {
+    background: #1a1a2e;
+}
+
+.background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    object-fit: cover;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.charts, main {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    color: white;
+    z-index: 0;
+}
+
+main {
+    overflow: hidden;
+    position: relative;
+    height: 95vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section article.tall {
+    width: 60vw;
+    height: auto;
+}
+
+section article.tall p {
+    color: #ffffff;
+    padding: 10px;
+    position: relative;
+    box-sizing: border-box;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.stats-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.stats-info p {
+    margin: 0;
+}
+
+#title {
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+section::before {
+    position: absolute;
+    top: -200px;
+    left: -350px;
+    width: 500px;
+    height: 500px;
+    content: "";
+    background: #ffffff;
+    transform: rotate(30deg);
+}
+
+section::after {
+    position: absolute;
+    bottom: -200px;
+    right: -350px;
+    width: 500px;
+    height: 500px;
+    content: "";
+    background: #ffffff;
+    transform: rotate(30deg);
+}
+
+.tall {
+    animation: tall 1.25s cubic-bezier(0.17, 0.67, 0, 1);
+}
+
+@keyframes tall {
+    0% {
+        left: -500px;
+        opacity: 0;
+    }
+
+    100% {
+        left: 0;
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    section::before,
+    section::after {
+        width: 200px;
+        height: 200px;
+    }
+}
