@@ -63,6 +63,7 @@ function Live() {
                                                         controls={false}
                                                         loop
                                                         style={imageStyle}
+                                                        playsInline
                                                     />
                                                 ) : (
                                                     <Image
