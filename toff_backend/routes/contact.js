@@ -4,6 +4,7 @@ const mysqlService = require('../services/mysqlService');
 const { mailTransporter } = require('../services/mailService');
 const { verifyToken } = require('../services/jwtService');
 
+// SEND EMAIL
 router.post('/', function (req, res) {
     mysqlService.getActiveEmail((error, result) => {
         if (error) {
@@ -46,6 +47,41 @@ router.post('/createmail', verifyToken, function(req, res) {
 
        res.json(results);
    });
+});
+
+router.put('/:id', verifyToken, function (req, res) {
+    const updatedItem = req.body.email;
+
+    mysqlService.updateEmail(req.params.id, updatedItem, (error, results) => {
+        if (error) {
+            res.status(500).json({ message: 'Internal server error', error: error });
+            return;
+        }
+
+        res.json(results);
+    });
+});
+
+router.delete('/:id', verifyToken, function(req, res) {
+    mysqlService.deleteEmail(req.params.id, (error, results) => {
+        if(error) {
+            res.status(500).json({ message: 'Internal server error', error: error });
+            return;
+        }
+
+        res.json(results);
+    });
+});
+
+router.get('/', function(req, res) {
+    mysqlService.getEmails((error, results) => {
+        if (error) {
+            res.status(500).json({ message: 'Internal server error', error: error });
+            return;
+        }
+
+        res.json(results);
+    });
 });
 
 module.exports = router;
