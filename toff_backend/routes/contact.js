@@ -2,22 +2,28 @@ var express = require('express');
 var router = express.Router();
 const mysqlService = require('../services/mysqlService');
 const { mailTransporter } = require('../services/mailService');
+const { verifyToken } = require('../services/jwtService');
 
 router.post('/', function (req, res) {
-    mysqlService.createStats(req.body, (error, results) => {
+    mysqlService.getActiveEmail((error, result) => {
         if (error) {
             res.status(500).json({ message: 'Internal server error', error: error });
             return;
         }
 
         const mailOptions = {
-            from: process.env.MAIL_SENDER_MAIL,
+            from: result.email,
             to: req.body.email,
             subject: 'TOFF Kontaktformular',
             text: req.body.contactReason,
         };
 
-        mailTransporter.sendMail(mailOptions, function (error, info) {
+        const activeEmail = {
+            email: result.email,
+            password: result.password
+        }
+
+        mailTransporter(activeEmail).sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.error('Error sending email:', error);
             } else {
@@ -25,8 +31,21 @@ router.post('/', function (req, res) {
             }
         });
 
-        res.json(results);
+        res.status(200).json( {
+            message: 'E-Mail sent!'
+        });
     });
+});
+
+router.post('/createmail', verifyToken, function(req, res) {
+   mysqlService.createEmail(req.body, (error, results) => {
+       if (error) {
+           res.status(500).json({ message: 'Internal server error', error: error });
+           return;
+       }
+
+       res.json(results);
+   });
 });
 
 module.exports = router;
