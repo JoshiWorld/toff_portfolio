@@ -13,6 +13,7 @@ import Unauthorized from './Components/Unauthorized';
 import { AuthProvider, useAuth } from './Utils/AuthProvider';
 import AdminLogin from './Components/Admin/AdminLogin';
 import Logout from './Components/Logout';
+import KontaktSent from './Components/KontaktSent';
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                         <Route path="/kontakt" element={<Kontakt />} />
                         <Route path="/live" element={<Live />} />
                         <Route path="/impressum" element={<Impressum />} />
+                        <Route path="/kontakt/sent" element={<KontaktSent />} />
 
                         <Route path="/login" element={<AdminLogin />} />
                         <Route path="/logout" element={<Logout />} />

@@ -9,6 +9,7 @@ require('dotenv').config();
 var liveRouter = require('./routes/live');
 var masterRouter = require('./routes/master');
 var statsRouter = require('./routes/stats');
+var contactRouter = require('./routes/contact');
 
 var app = express();
 
@@ -45,6 +46,7 @@ app.use(cors(corsOptions));
 app.use('/api/live', liveRouter);
 app.use('/api/master', masterRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/contact', contactRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

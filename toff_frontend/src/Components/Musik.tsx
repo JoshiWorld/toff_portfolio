@@ -4,10 +4,16 @@ import {StatsItem} from "../Types/types";
 import {API_BASE_URL} from "../config";
 import MusikPlaylist from './MusikPlaylist';
 import { Spinner } from 'react-bootstrap';
+import { Pagination } from 'react-bootstrap';
 
 function Musik() {
     const [stats, setStats] = useState<StatsItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 3;
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const statsToDisplay = stats.slice(startIndex, endIndex);
 
     useEffect(() => {
         if (stats.length === 0) {
@@ -26,6 +32,12 @@ function Musik() {
                 .catch((error) => console.error('Error fetching data:', error));
         }
     }, [stats.length]);
+
+    const handlePageChange = (page: number) => {
+        if(page-1 === Math.ceil(stats.length / pageSize)) page = 1;
+        if(page < 1) page = Math.ceil(stats.length / pageSize);
+        setCurrentPage(page);
+    };
 
     return (
         <div className="charts">
@@ -47,17 +59,40 @@ function Musik() {
                                     <MusikPlaylist />
                                 </div>
                                 {stats.length !== 0 && (
-                                    <div className="mt-4">
+                                    <div className="mt-4 stats-container">
                                         <h1>MEILENSTEINE</h1>
-                                        {stats.map((data, index) => (
-                                            <div key={index}>
+
+                                        {stats.length > 3 && (
+                                            <Pagination className="justify-content-between pagination-lg arrowsPosition">
+                                                <div className="arrows-container">
+                                                    <a
+                                                        className="pageArrows left-arrow"
+                                                        onClick={() => handlePageChange(currentPage - 1)}
+                                                    >
+                                                        &lt;
+                                                    </a>
+                                                </div>
+
+                                                <div className="arrows-container">
+                                                    <a
+                                                        className="pageArrows right-arrow"
+                                                        onClick={() => handlePageChange(currentPage + 1)}
+                                                    >
+                                                        &gt;
+                                                    </a>
+                                                </div>
+                                            </Pagination>
+                                        )}
+
+                                        {statsToDisplay.map((data, index) => (
+                                            <div key={data.id}>
                                                 <div className="stats-info">
                                                     {/*// @ts-ignore*/}
                                                     <p>{data.value.toLocaleString()}</p>
                                                     {/*// @ts-ignore*/}
                                                     <p>{data.goal.toLocaleString()}</p>
                                                 </div>
-                                                <p>
+                                                <p id="title">
                                                     {data.title}
                                                     <span></span>
                                                     <span
