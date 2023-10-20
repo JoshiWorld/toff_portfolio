@@ -11,7 +11,6 @@ const pool = mysql.createPool({
 
 
 
-// Create tables if they don't exist
 pool.query(`
   CREATE TABLE IF NOT EXISTS live (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -36,6 +35,11 @@ pool.query(`
     goal INT,
     color VARCHAR(255)
   );
+  
+  CREATE TABLE IF NOT EXISTS email (
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+  );
 `, (error) => {
     if (error) {
         console.error('Error creating tables:', error);
@@ -47,6 +51,9 @@ pool.query(`
 
 
 /* ROLE MASTER */
+
+
+
 function createMaster(master, callback) {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -320,6 +327,7 @@ function deleteLiveBlog(id, callback) {
 /* STATS */
 
 
+
 function getStats(callback) {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -450,7 +458,80 @@ function deleteStats(id, callback) {
 }
 
 
+
+/* MAILER */
+
+
+
+function getMailByEmail(email, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const query = 'SELECT * FROM email WHERE email = ' + email;
+
+        connection.query(query, (error, result) => {
+            connection.release(); // Release the connection back to the pool
+
+            if (error) {
+                console.error('Error executing query:', error);
+                callback(error, null);
+                return;
+            }
+
+            if(result) {
+                emailUser = {
+                    email: result.email,
+                    password: result.password,
+                };
+
+                callback(null, emailUser);
+            }
+        });
+    });
+}
+
+function createEmail(emailUser, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to the database:', err);
+            callback(err, null);
+            return;
+        }
+
+        bcrypt.hash(emailUser.password, process.env.HASH_SALTS, (hashError, hashedPassword) => {
+            if (hashError) {
+                console.error('Error hashing the password:', hashError);
+                connection.release();
+                callback(hashError, null);
+            } else {
+                const insertQuery = 'INSERT INTO email (email, password) VALUES (?, ?)';
+                const values = [emailUser.email, hashedPassword];
+
+                connection.query(insertQuery, values, (error, results) => {
+                    connection.release();
+
+                    if (error) {
+                        console.error('Error inserting email entry:', error);
+                        callback(error, null);
+                    } else {
+                        console.log('Email entry inserted successfully');
+                        callback(null, results);
+                    }
+                });
+            }
+        });
+    });
+}
+
+
+
 /* EXPORTS */
+
+
 
 module.exports = {
     // MASTER
@@ -468,5 +549,9 @@ module.exports = {
     getStats,
     createStats,
     updateStats,
-    deleteStats
+    deleteStats,
+
+    // MAILER
+    getMailByEmail,
+    createEmail
 };
