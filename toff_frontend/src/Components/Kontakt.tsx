@@ -24,7 +24,32 @@ function Kontakt() {
     // @ts-ignore
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+
+        const payload = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            company: formData.company,
+            email: formData.email,
+            contactReason: formData.contactReason,
+        };
+
+        fetch(`${API_BASE_URL}/api/contact`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log('Form submitted successfully');
+                } else {
+                    console.error('Form submission failed');
+                }
+            })
+            .catch((error) => {
+                console.error('Error submitting form:', error);
+            });
     };
 
     return (
