@@ -1,5 +1,5 @@
 const mysql = require('mysql2');
-const bcrypt = require('bcrypt');
+const { encrypt, decrypt } = require('./cryptoService');
 
 const pool = mysql.createPool({
     host: process.env.SQL_HOST,
@@ -37,8 +37,16 @@ pool.query(`
   );
   
   CREATE TABLE IF NOT EXISTS email (
+    email_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
+  );
+  
+  CREATE TABLE IF NOT EXISTS active_email (
+    active_email_id INT PRIMARY KEY AUTO_INCREMENT,
+    email_id INT,
+    FOREIGN KEY (email_id) REFERENCES email (email_id),
+    UNIQUE (email_id)
   );
 `, (error) => {
     if (error) {
@@ -463,7 +471,7 @@ function deleteStats(id, callback) {
 
 
 
-function getMailByEmail(email, callback) {
+function getActiveEmail(callback) {
     pool.getConnection((err, connection) => {
         if (err) {
             console.error('Error connecting to database:', err);
@@ -471,10 +479,10 @@ function getMailByEmail(email, callback) {
             return;
         }
 
-        const query = 'SELECT * FROM email WHERE email = ' + email;
+        const query = 'SELECT email, password FROM email WHERE email_id IN (SELECT email_id FROM active_email)';
 
         connection.query(query, (error, result) => {
-            connection.release(); // Release the connection back to the pool
+            connection.release();
 
             if (error) {
                 console.error('Error executing query:', error);
@@ -482,17 +490,20 @@ function getMailByEmail(email, callback) {
                 return;
             }
 
-            if(result) {
-                emailUser = {
-                    email: result.email,
-                    password: result.password,
+            if (result.length > 0) {
+                const activeEmail = {
+                    email: result[0].email,
+                    password: decrypt(result[0].password),
                 };
 
-                callback(null, emailUser);
+                callback(null, activeEmail);
+            } else {
+                callback(null, null);
             }
         });
     });
 }
+
 
 function createEmail(emailUser, callback) {
     pool.getConnection((err, connection) => {
@@ -502,26 +513,18 @@ function createEmail(emailUser, callback) {
             return;
         }
 
-        bcrypt.hash(emailUser.password, process.env.HASH_SALTS, (hashError, hashedPassword) => {
-            if (hashError) {
-                console.error('Error hashing the password:', hashError);
-                connection.release();
-                callback(hashError, null);
+        const insertQuery = 'INSERT INTO email (email, password) VALUES (?, ?)';
+        const values = [emailUser.email, encrypt(emailUser.password)];
+
+        connection.query(insertQuery, values, (error, results) => {
+            connection.release();
+
+            if (error) {
+                console.error('Error inserting email entry:', error);
+                callback(error, null);
             } else {
-                const insertQuery = 'INSERT INTO email (email, password) VALUES (?, ?)';
-                const values = [emailUser.email, hashedPassword];
-
-                connection.query(insertQuery, values, (error, results) => {
-                    connection.release();
-
-                    if (error) {
-                        console.error('Error inserting email entry:', error);
-                        callback(error, null);
-                    } else {
-                        console.log('Email entry inserted successfully');
-                        callback(null, results);
-                    }
-                });
+                console.log('Email entry inserted successfully');
+                callback(null, results);
             }
         });
     });
@@ -552,6 +555,6 @@ module.exports = {
     deleteStats,
 
     // MAILER
-    getMailByEmail,
+    getActiveEmail,
     createEmail
 };
