@@ -5,12 +5,18 @@ import { Table, Button, Spinner } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
 import { API_BASE_URL } from '../../config';
 import CreateLiveAuftritt from './Components/CreateLiveAuftritt';
+import { Pagination } from 'react-bootstrap';
 
 function AdminLiveAuftritte() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
     const [editableRow, setEditableRow] = useState<number | null>(null);
     const [isCreateLiveVisible, setCreateLiveVisible] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const liveAuftritteToDisplay = liveAuftritte.slice(startIndex, endIndex);
     const { token } = useAuth();
 
     useEffect(() => {
@@ -28,6 +34,10 @@ function AdminLiveAuftritte() {
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
     };
 
     const handleRemoveClick = (index: number) => {
@@ -53,6 +63,8 @@ function AdminLiveAuftritte() {
         const updatedItem = { ...updatedLiveAuftritte[index] };
         const image = updatedItem.image;
         delete updatedItem.image;
+
+        updatedItem.description = updatedItem.description.replace(/\n/g, '<br>');
 
         fetch(`${API_BASE_URL}/api/live/${updatedItem.id}`, {
             method: 'PUT',
@@ -117,7 +129,7 @@ function AdminLiveAuftritte() {
                         </tr>
                         </thead>
                         <tbody>
-                        {liveAuftritte.map((item, index) => (
+                        {liveAuftritteToDisplay.map((item, index) => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
                                 <td>
@@ -140,9 +152,8 @@ function AdminLiveAuftritte() {
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
-                                        <input
-                                            type="text"
-                                            value={item.description}
+                                        <textarea
+                                            value={item.description.replace(/<br\s*\/?>/g, '\n')} // Convert <br> tags to newlines
                                             onChange={(e) => {
                                                 const updatedLiveAuftritte = [...liveAuftritte];
                                                 updatedLiveAuftritte[index] = {
@@ -153,7 +164,10 @@ function AdminLiveAuftritte() {
                                             }}
                                         />
                                     ) : (
-                                        item.description
+                                        <div
+                                            dangerouslySetInnerHTML={{ __html: item.description.replace(/\n/g, '<br />') }}
+                                            style={{ whiteSpace: 'pre-line' }}
+                                        />
                                     )}
                                 </td>
                                 <td>
@@ -247,6 +261,20 @@ function AdminLiveAuftritte() {
                         ))}
                         </tbody>
                     </Table>
+
+                    <Pagination>
+                        {Array(Math.ceil(liveAuftritte.length / itemsPerPage))
+                            .fill(null)
+                            .map((_, page) => (
+                                <Pagination.Item
+                                    key={page}
+                                    active={page + 1 === currentPage}
+                                    onClick={() => handlePageChange(page + 1)}
+                                >
+                                    {page + 1}
+                                </Pagination.Item>
+                            ))}
+                    </Pagination>
 
                     {isCreateLiveVisible ? (
                         <CreateLiveAuftritt show={isCreateLiveVisible} onHide={handleOnHide} />

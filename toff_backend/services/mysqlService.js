@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
-const bcrypt = require('bcrypt');
+const { encrypt, decrypt } = require('./cryptoService');
+const { call } = require('express');
 
 const pool = mysql.createPool({
     host: process.env.SQL_HOST,
@@ -11,7 +12,6 @@ const pool = mysql.createPool({
 
 
 
-// Create tables if they don't exist
 pool.query(`
   CREATE TABLE IF NOT EXISTS live (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -36,6 +36,19 @@ pool.query(`
     goal INT,
     color VARCHAR(255)
   );
+  
+  CREATE TABLE IF NOT EXISTS email (
+    email_id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+  );
+  
+  CREATE TABLE IF NOT EXISTS active_email (
+    active_email_id INT PRIMARY KEY AUTO_INCREMENT,
+    email_id INT,
+    FOREIGN KEY (email_id) REFERENCES email (email_id),
+    UNIQUE (email_id)
+  );
 `, (error) => {
     if (error) {
         console.error('Error creating tables:', error);
@@ -47,6 +60,9 @@ pool.query(`
 
 
 /* ROLE MASTER */
+
+
+
 function createMaster(master, callback) {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -192,6 +208,45 @@ function getLiveBlogs(callback) {
     });
 }
 
+function getLiveBlogById(id, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const query = 'SELECT * FROM live WHERE id = ' + id;
+
+        connection.query(query, (error, result) => {
+            connection.release(); // Release the connection back to the pool
+
+            if (error) {
+                console.error('Error executing query:', error);
+                callback(error, null);
+                return;
+            }
+
+            let liveblog;
+
+            if(result) {
+                liveblog = {
+                    id: result.id,
+                    title: result.title,
+                    description: result.description,
+                    ticketLink: result.ticketLink,
+                    imageSource: result.imageSource,
+                    archived: result.archived,
+                    isVideo: result.isVideo,
+                    mediaSource: result.mediaSource,
+                };
+
+                callback(null, liveblog);
+            }
+        });
+    });
+}
+
 function createLiveBlog(liveblog, callback) {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -235,6 +290,8 @@ function updateLiveBlog(id, updatedData, callback) {
 
         // Execute the SQL query with the provided data
         connection.query(updateQuery, [updatedData, id], (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error updating live entry:', error);
                 callback(error, null);
@@ -243,8 +300,6 @@ function updateLiveBlog(id, updatedData, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
@@ -263,6 +318,8 @@ function deleteLiveBlog(id, callback) {
 
         // Execute the SQL query with the provided ID
         connection.query(deleteQuery, [id], (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error deleting live entry:', error);
                 callback(error, null);
@@ -271,14 +328,13 @@ function deleteLiveBlog(id, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
 
 
 /* STATS */
+
 
 
 function getStats(callback) {
@@ -369,6 +425,8 @@ function updateStats(id, updatedData, callback) {
 
         // Execute the SQL query with the provided data
         connection.query(updateQuery, [updatedData, id], (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error updating stats entry:', error);
                 callback(error, null);
@@ -377,8 +435,6 @@ function updateStats(id, updatedData, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
@@ -397,6 +453,8 @@ function deleteStats(id, callback) {
 
         // Execute the SQL query with the provided ID
         connection.query(deleteQuery, [id], (error, results) => {
+            connection.release();
+
             if (error) {
                 console.error('Error deleting stats entry:', error);
                 callback(error, null);
@@ -405,13 +463,250 @@ function deleteStats(id, callback) {
                 callback(null, results);
             }
         });
-
-        connection.end();
     });
 }
 
 
+
+/* MAILER */
+
+
+
+function getActiveEmail(callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const query = 'SELECT email, password FROM email WHERE email_id IN (SELECT email_id FROM active_email)';
+
+        connection.query(query, (error, result) => {
+            connection.release();
+
+            if (error) {
+                console.error('Error executing query:', error);
+                callback(error, null);
+                return;
+            }
+
+            if (result.length > 0) {
+                const activeEmail = {
+                    email: result[0].email,
+                    password: decrypt(result[0].password),
+                };
+
+                callback(null, activeEmail);
+            } else {
+                callback(null, null);
+            }
+        });
+    });
+}
+
+function createEmail(emailUser, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to the database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const insertQuery = 'INSERT INTO email (email, password) VALUES (?, ?)';
+        const values = [emailUser.email, encrypt(emailUser.password)];
+
+        connection.query(insertQuery, values, (error, results) => {
+            connection.release();
+
+            if (error) {
+                console.error('Error inserting email entry:', error);
+                callback(error, null);
+            } else {
+                console.log('Email entry inserted successfully');
+                callback(null, results);
+            }
+        });
+    });
+}
+
+function updateEmail(id, updatedData, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const updateQuery = `UPDATE email SET ? WHERE id = ?;`;
+        const getActiveEmailQuery = 'SELECT email_id FROM active_email';
+
+        connection.query(getActiveEmailQuery, (error, result) => {
+           connection.release();
+
+           if (error) {
+               console.error('Error fetching active email:', error);
+               callback(error, null);
+               return;
+           }
+
+           if(result && result[0]) {
+               const updateActiveQuery = `UPDATE active_email SET ? WHERE email_id = ?;`;
+               const isActive = result[0].email_id === parseInt(id);
+
+               if(updatedData.isActive && isActive) {
+                   callback(error, null);
+               }
+
+               console.log(result[0].email_id === parseInt(id));
+           }
+        });
+
+        return;
+
+        delete updatedData.isActive;
+
+        connection.query(updateQuery, [updatedData, id], (error, results) => {
+            connection.release();
+
+            if (error) {
+                console.error('Error updating email entry:', error);
+                callback(error, null);
+            } else {
+                console.log('Email entry updated successfully');
+                callback(null, results);
+            }
+        });
+    });
+}
+
+function deleteEmail(id, callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to the database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const getEmailQuery = 'SELECT * FROM email WHERE id = ?';
+        connection.query(getEmailQuery, [id], (fetchError, emailResult) => {
+            if (fetchError) {
+                connection.release();
+                console.error('Error fetching email:', fetchError);
+                callback(fetchError, null);
+                return;
+            }
+
+            if (emailResult.length === 0) {
+                connection.release();
+                callback('Email not found', null);
+                return;
+            }
+
+            const emailToDelete = emailResult[0];
+
+            const getActiveEmailQuery = 'SELECT email FROM active_email';
+            connection.query(getActiveEmailQuery, (activeEmailError, activeEmailResult) => {
+                if (activeEmailError) {
+                    connection.release();
+                    console.error('Error fetching active email:', activeEmailError);
+                    callback(activeEmailError, null);
+                    return;
+                }
+
+                const activeEmail = activeEmailResult[0]?.email || '';
+
+                if (emailToDelete.email === activeEmail) {
+                    const deleteActiveEmailQuery = 'DELETE FROM active_email';
+                    connection.query(deleteActiveEmailQuery, (deleteActiveEmailError, deleteActiveEmailResult) => {
+                        if (deleteActiveEmailError) {
+                            connection.release();
+                            console.error('Error deleting active email:', deleteActiveEmailError);
+                            callback(deleteActiveEmailError, null);
+                            return;
+                        }
+
+                        console.log('Active email deleted successfully');
+                        deleteEmailFromEmailTable(connection, id, callback);
+                    });
+                } else {
+                    deleteEmailFromEmailTable(connection, id, callback);
+                }
+            });
+        });
+    });
+}
+
+function deleteEmailFromEmailTable(connection, id, callback) {
+    const deleteEmailQuery = 'DELETE FROM email WHERE id = ?';
+    connection.query(deleteEmailQuery, [id], (deleteError, deleteResult) => {
+        if (deleteError) {
+            console.error('Error deleting email entry:', deleteError);
+            connection.release();
+            callback(deleteError, null);
+        } else {
+            console.log('Email entry deleted successfully');
+            connection.release();
+            callback(null, deleteResult);
+        }
+    });
+}
+
+function getEmails(callback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to database:', err);
+            callback(err, null);
+            return;
+        }
+
+        const getEmailQuery = 'SELECT * FROM email';
+        const getActiveEmailQuery = 'SELECT email_id FROM active_email';
+
+        connection.query(getEmailQuery, (error, results) => {
+            if (error) {
+                connection.release();
+                console.error('Error executing query:', error);
+                callback(error, null);
+                return;
+            }
+
+            const emails = [];
+
+            connection.query(getActiveEmailQuery, (activeEmailError, activeEmailResults) => {
+                if (activeEmailError) {
+                    connection.release();
+                    console.error('Error fetching active email:', activeEmailError);
+                    callback(activeEmailError, null);
+                    return;
+                }
+
+                const activeEmail = activeEmailResults[0]?.email_id || '';
+
+                results.forEach(row => {
+                    let existingEmail = {
+                        id: row.email_id,
+                        email: row.email,
+                        isActive: row.email_id === activeEmail,
+                    };
+
+                    emails.push(existingEmail);
+                });
+
+                connection.release();
+                callback(null, emails);
+            });
+        });
+    });
+}
+
+
+
+
+
 /* EXPORTS */
+
+
 
 module.exports = {
     // MASTER
@@ -423,10 +718,18 @@ module.exports = {
     createLiveBlog,
     updateLiveBlog,
     deleteLiveBlog,
+    getLiveBlogById,
 
     // STATS
     getStats,
     createStats,
     updateStats,
-    deleteStats
+    deleteStats,
+
+    // MAILER
+    getActiveEmail,
+    createEmail,
+    updateEmail,
+    deleteEmail,
+    getEmails
 };

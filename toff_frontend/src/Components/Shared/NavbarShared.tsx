@@ -8,8 +8,12 @@ import { useAuth } from '../../Utils/AuthProvider';
 function NavbarShared() {
     const {token} = useAuth();
 
+    const navbarStyle = {
+        zIndex: 999,
+    }
+
     return (
-        <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
+        <Navbar collapseOnSelect expand="md" bg="dark" variant="dark" style={navbarStyle}>
             <Container>
                 <Navbar.Brand href="/" style={{ fontFamily: 'Cambria' }}>
                     <img
