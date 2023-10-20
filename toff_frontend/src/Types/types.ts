@@ -19,3 +19,9 @@ export interface StatsItem {
     color?: string;
     percentageString?: string;
 }
+
+export interface Email {
+    id: number;
+    email: string;
+    password: string;
+}
