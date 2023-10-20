@@ -24,7 +24,6 @@ function AdminKontakt() {
             .then((response) => response.json())
             .then((data) => {
                 setEmails(data);
-                console.log(data);
                 setIsLoading(false);
             })
             .catch((error) => console.error('Error fetching data:', error));
@@ -68,7 +67,6 @@ function AdminKontakt() {
             .then((response) => {
                 if (response.ok) {
                     // Handle success
-                    // You may want to update the state or perform other actions
                 } else {
                     // Handle errors
                 }
@@ -77,7 +75,6 @@ function AdminKontakt() {
                 console.error('Error sending data to the backend:', error);
             });
 
-        // Update the state if needed
         updatedEmails[index] = updatedItem;
         setEmails(updatedEmails);
         setEditableRow(null);
@@ -131,39 +128,21 @@ function AdminKontakt() {
                                     )}
                                 </td>
                                 <td>
-                                    {isRowEditable(index) && (
-                                        <input
-                                            type="text"
-                                            value={item.password}
-                                            onChange={(e) => {
-                                                const updatedEmails = [...emails];
-                                                updatedEmails[index] = {
-                                                    ...updatedEmails[index],
-                                                    password: e.target.value,
-                                                };
-                                                setEmails(updatedEmails);
-                                            }}
-                                        />
-                                    )}
-                                </td>
-                                <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="checkbox"
-                                            checked={item.active}
+                                            checked={item.isActive}
                                             onChange={(e) => {
-                                                // Update the archived field when the checkbox is toggled
                                                 const updatedEmails = [...emails];
                                                 updatedEmails[index] = {
                                                     ...updatedEmails[index],
-                                                    active: e.target.checked,
+                                                    isActive: e.target.checked,
                                                 };
                                                 setEmails(updatedEmails);
                                             }}
                                         />
                                     ) : (
-                                        // Display "Yes" or "No" based on the archived state when not in edit mode
-                                        item.active ? "Yes" : "No"
+                                        item.isActive ? "Yes" : "No"
                                     )}
                                 </td>
 

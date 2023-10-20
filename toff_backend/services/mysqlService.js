@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const { encrypt, decrypt } = require('./cryptoService');
+const { call } = require('express');
 
 const pool = mysql.createPool({
     host: process.env.SQL_HOST,
@@ -537,10 +538,33 @@ function updateEmail(id, updatedData, callback) {
             return;
         }
 
-        const updateQuery = `
-        UPDATE email
-        SET ? 
-        WHERE id = ?;`;
+        const updateQuery = `UPDATE email SET ? WHERE id = ?;`;
+        const getActiveEmailQuery = 'SELECT email_id FROM active_email';
+
+        connection.query(getActiveEmailQuery, (error, result) => {
+           connection.release();
+
+           if (error) {
+               console.error('Error fetching active email:', error);
+               callback(error, null);
+               return;
+           }
+
+           if(result && result[0]) {
+               const updateActiveQuery = `UPDATE active_email SET ? WHERE email_id = ?;`;
+               const isActive = result[0].email_id === parseInt(id);
+
+               if(updatedData.isActive && isActive) {
+                   callback(error, null);
+               }
+
+               console.log(result[0].email_id === parseInt(id));
+           }
+        });
+
+        return;
+
+        delete updatedData.isActive;
 
         connection.query(updateQuery, [updatedData, id], (error, results) => {
             connection.release();
@@ -637,7 +661,7 @@ function getEmails(callback) {
         }
 
         const getEmailQuery = 'SELECT * FROM email';
-        const getActiveEmailQuery = 'SELECT email FROM active_email';
+        const getActiveEmailQuery = 'SELECT email_id FROM active_email';
 
         connection.query(getEmailQuery, (error, results) => {
             if (error) {
@@ -657,16 +681,13 @@ function getEmails(callback) {
                     return;
                 }
 
-                const activeEmail = activeEmailResults[0]?.email || '';
+                const activeEmail = activeEmailResults[0]?.email_id || '';
 
                 results.forEach(row => {
-                    const emailId = row.id;
-
                     let existingEmail = {
-                        id: row.id,
-                        title: row.title,
-                        value: row.value,
-                        isActive: row.value === activeEmail,
+                        id: row.email_id,
+                        email: row.email,
+                        isActive: row.email_id === activeEmail,
                     };
 
                     emails.push(existingEmail);

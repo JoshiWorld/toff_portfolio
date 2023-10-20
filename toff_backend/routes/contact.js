@@ -12,11 +12,18 @@ router.post('/', function (req, res) {
             return;
         }
 
-        const mailOptions = {
-            from: result.email,
-            to: req.body.email,
-            subject: 'TOFF Kontaktformular',
-            text: req.body.contactReason,
+        const mailOptionsContact = {
+            from: `"TOFF Kontaktformular" <${result.email}>`,
+            to: result.email,
+            subject: req.body.firstName + ' ' + req.body.lastName,
+            html: `
+                <p><strong>Vorname:</strong> ${req.body.firstName}</p>
+                <p><strong>Nachname:</strong> ${req.body.lastName}</p>
+                <p><strong>E-Mail:</strong> ${req.body.email}</p>
+                <p><strong>Firma:</strong> ${req.body.company}</p>
+                <p><strong>Anliegen:</strong></p>
+                <p>${req.body.contactReason}</p>
+            `,
         };
 
         const activeEmail = {
@@ -24,11 +31,44 @@ router.post('/', function (req, res) {
             password: result.password
         }
 
-        mailTransporter(activeEmail).sendMail(mailOptions, function (error, info) {
+        mailTransporter(activeEmail).sendMail(mailOptionsContact, function (error, info) {
             if (error) {
-                console.error('Error sending email:', error);
+                console.error('Error sending contact email:', error);
             } else {
-                console.log('Email sent:', info.response);
+                console.log('Contact-Email sent:', info.response);
+            }
+        });
+
+        const mailOptionsCustomer = {
+            from: `"TOFF Kontaktformular" <${result.email}>`,
+            to: req.body.email,
+            subject: 'TOFF Kontaktformular',
+            html: `
+                <p>Hallo ${req.body.firstName} ${req.body.lastName},</p>
+                <p>Wir haben Ihr Anliegen erhalten.</p>
+                <br>
+                <p>Sie bekommen innerhalb von 24 Stunden eine Antwort von uns!</p>
+                <br>
+                <p>Mit freundlichen Grüßen</p>
+                <p>TOFF</p>
+                <br>
+                <br>
+                <p>Ihre eingegebenen Daten:</p>
+                <br>
+                <p><strong>Vorname:</strong> ${req.body.firstName}</p>
+                <p><strong>Nachname:</strong> ${req.body.lastName}</p>
+                <p><strong>E-Mail:</strong> ${req.body.email}</p>
+                <p><strong>Firma:</strong> ${req.body.company}</p>
+                <p><strong>Anliegen:</strong></p>
+                <p>${req.body.contactReason}</p>
+            `,
+        };
+
+        mailTransporter(activeEmail).sendMail(mailOptionsCustomer, function (error, info) {
+            if (error) {
+                console.error('Error sending customer email:', error);
+            } else {
+                console.log('Customer-Email sent:', info.response);
             }
         });
 
@@ -39,7 +79,7 @@ router.post('/', function (req, res) {
 });
 
 router.post('/createmail', verifyToken, function(req, res) {
-   mysqlService.createEmail(req.body, (error, results) => {
+   mysqlService.createEmail(req.body.email, (error, results) => {
        if (error) {
            res.status(500).json({ message: 'Internal server error', error: error });
            return;

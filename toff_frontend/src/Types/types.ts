@@ -24,5 +24,5 @@ export interface Email {
     id: number;
     email: string;
     password: string;
-    active: boolean;
+    isActive: boolean;
 }

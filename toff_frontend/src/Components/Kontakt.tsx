@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Kontakt.css';
 import { API_BASE_URL } from '../config';
-import { Form, Button, Col, Row, Card } from 'react-bootstrap';
+import { Form, Button, Col, Row, Card, Spinner } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function Kontakt() {
     const [formData, setFormData] = useState({
@@ -11,6 +12,9 @@ function Kontakt() {
         lastName: '',
         company: '',
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const navigate = useNavigate(); // Get the navigation function
 
     // @ts-ignore
     const handleChange = (e) => {
@@ -24,6 +28,8 @@ function Kontakt() {
     // @ts-ignore
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        setIsLoading(true);
 
         formData.contactReason = formData.contactReason.replace(/\n/g, '<br>');
 
@@ -45,14 +51,25 @@ function Kontakt() {
             .then((response) => {
                 if (response.ok) {
                     console.log('Form submitted successfully');
+                    setIsSubmitted(true);
                 } else {
                     console.error('Form submission failed');
                 }
             })
             .catch((error) => {
                 console.error('Error submitting form:', error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
+
+    useEffect(() => {
+        if (isSubmitted) {
+            // Use the navigate function to go to the '/kontakt/sent' route
+            navigate('/kontakt/sent');
+        }
+    }, [isSubmitted, navigate]);
 
     return (
         <div className="charts">
@@ -99,7 +116,6 @@ function Kontakt() {
                                                     name="company"
                                                     value={formData.company}
                                                     onChange={handleChange}
-                                                    required
                                                 />
                                             </Form.Group>
                                         </Row>
@@ -125,6 +141,13 @@ function Kontakt() {
                                         </Form.Group>
                                         <Button type="submit" className="mt-4">Senden</Button>
                                     </Form>
+                                    {isLoading && (
+                                        <div className="text-center mt-3">
+                                            <Spinner animation="border" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </Spinner>
+                                        </div>
+                                    )}
                                 </Card.Body>
                             </Card>
                         </div>
