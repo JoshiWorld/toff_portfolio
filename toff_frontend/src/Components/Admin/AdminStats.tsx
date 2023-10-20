@@ -5,12 +5,19 @@ import { Table, Button, Spinner } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
 import CreateStats from './Components/CreateStats';
 import { API_BASE_URL } from '../../config';
+import { Pagination } from 'react-bootstrap';
+
 
 function AdminStats() {
     const [stats, setStats] = useState<StatsItem[]>([]);
     const [editableRow, setEditableRow] = useState<number | null>(null);
     const [isCreateStatsVisible, setCreateStatsVisible] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const statsToDisplay = stats.slice(startIndex, endIndex);
     const { token } = useAuth();
 
     useEffect(() => {
@@ -25,6 +32,10 @@ function AdminStats() {
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
     };
 
     const handleRemoveClick = (index: number) => {
@@ -107,7 +118,7 @@ function AdminStats() {
                         </tr>
                         </thead>
                         <tbody>
-                        {stats.map((item, index) => (
+                        {statsToDisplay.map((item, index) => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
                                 <td>
@@ -207,6 +218,20 @@ function AdminStats() {
                         ))}
                         </tbody>
                     </Table>
+
+                    <Pagination>
+                        {Array(Math.ceil(stats.length / itemsPerPage))
+                            .fill(null)
+                            .map((_, page) => (
+                                <Pagination.Item
+                                    key={page}
+                                    active={page + 1 === currentPage}
+                                    onClick={() => handlePageChange(page + 1)}
+                                >
+                                    {page + 1}
+                                </Pagination.Item>
+                            ))}
+                    </Pagination>
 
                     {isCreateStatsVisible ? (
                         <CreateStats show={isCreateStatsVisible} onHide={handleOnHide} />
