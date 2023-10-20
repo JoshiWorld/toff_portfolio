@@ -25,6 +25,8 @@ function Kontakt() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        formData.contactReason = formData.contactReason.replace(/\n/g, '<br>');
+
         const payload = {
             firstName: formData.firstName,
             lastName: formData.lastName,
