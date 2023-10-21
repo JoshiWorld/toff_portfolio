@@ -7,10 +7,10 @@ import { useAuth } from '../../Utils/AuthProvider';
 import CreateEmail from './Components/CreateEmail';
 
 function AdminKontakt() {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [emails, setEmails] = useState<Email[]>([]);
-    const [editableRow, setEditableRow] = useState<number | null>(null);
     const [isCreateEmailVisible, setCreateEmailVisible] = useState(false);
+    const [selectedEmail, setSelectedEmail] = useState<Email | undefined | null>(null);
     const { token } = useAuth();
 
     useEffect(() => {
@@ -24,38 +24,28 @@ function AdminKontakt() {
             .then((response) => response.json())
             .then((data) => {
                 setEmails(data);
+                const initialSelectedEmail = data.find((email: Email) => email.isActive);
+                if (initialSelectedEmail) setSelectedEmail(initialSelectedEmail);
                 setIsLoading(false);
             })
-            .catch((error) => console.error('Error fetching data:', error));
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+                setIsLoading(false); // Ensure isLoading is set to false even on error
+            });
     }, [token]);
 
-    const handleEditClick = (index: number) => {
-        setEditableRow(index);
-    };
-
-    const handleRemoveClick = (index: number) => {
-        const emailToBeRemoved = emails[index];
-        fetch(`${API_BASE_URL}/api/contact/${emailToBeRemoved.id}`, {
-            method: 'DELETE',
+    const handleSaveClick = () => {
+        const updatedItem = {
             // @ts-ignore
-            headers: {
-                'authorization': token
-            }
-        }).then((response) => {
-            if(response.ok) {
-                window.location.reload();
-            }
-        }).catch((error) => {
-            console.error('Error deleting data:', error);
-        });
-    };
-
-    const handleSaveClick = (index: number) => {
-        const updatedEmails = [...emails];
-        const updatedItem = { ...updatedEmails[index] };
+            email_id: selectedEmail.id,
+            // @ts-ignore
+            email: selectedEmail.email,
+            // @ts-ignore
+            isActive: true
+        }
         const formDataJSON = JSON.stringify({ email: updatedItem });
 
-        fetch(`${API_BASE_URL}/api/contact/${updatedItem.id}`, {
+        fetch(`${API_BASE_URL}/api/contact/${updatedItem.email_id}`, {
             method: 'PUT',
             // @ts-ignore
             headers: {
@@ -66,7 +56,39 @@ function AdminKontakt() {
         })
             .then((response) => {
                 if (response.ok) {
-                    // Handle success
+                    const oldActive = emails.find(email => email.isActive);
+
+                    if(oldActive) {
+                        const oldActiveUpdated = {
+                            // @ts-ignore
+                            email_id: oldActive.id,
+                            // @ts-ignore
+                            email: oldActive.email,
+                            // @ts-ignore
+                            isActive: false
+                        }
+                        const oldActiveFormated = JSON.stringify({ email: oldActiveUpdated });
+
+                        fetch(`${API_BASE_URL}/api/contact/${oldActiveUpdated.email_id}`, {
+                            method: 'PUT',
+                            // @ts-ignore
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'authorization': token,
+                            },
+                            body: oldActiveFormated,
+                        })
+                            .then((response) => {
+                                if (response.ok) {
+                                    console.log('Emails updated');
+                                } else {
+                                    // Handle errors
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error sending data to the backend:', error);
+                            });
+                    }
                 } else {
                     // Handle errors
                 }
@@ -74,21 +96,11 @@ function AdminKontakt() {
             .catch((error) => {
                 console.error('Error sending data to the backend:', error);
             });
-
-        updatedEmails[index] = updatedItem;
-        setEmails(updatedEmails);
-        setEditableRow(null);
-    };
-
-    const handleCancelClick = () => {
-        setEditableRow(null);
     };
 
     const handleOnHide = () => {
         setCreateEmailVisible(false);
     }
-
-    const isRowEditable = (index: number) => index === editableRow;
 
     return (
         <>
@@ -96,80 +108,31 @@ function AdminKontakt() {
                 <Spinner animation="grow" />
             ) : (
                 <Container>
-                    <Table responsive="xl">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>E-Mail</th>
-                            <th>Active</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {emails.map((item, index) => (
-                            <tr key={item.id}>
-                                <td>{item.id}</td>
-                                <td>
-                                    {isRowEditable(index) ? (
-                                        <input
-                                            type="text"
-                                            value={item.email}
-                                            onChange={(e) => {
-                                                const updatedEmails = [...emails];
-                                                updatedEmails[index] = {
-                                                    ...updatedEmails[index],
-                                                    email: e.target.value,
-                                                };
-                                                setEmails(updatedEmails);
-                                            }}
-                                        />
-                                    ) : (
-                                        item.email
-                                    )}
-                                </td>
-                                <td>
-                                    {isRowEditable(index) ? (
-                                        <input
-                                            type="checkbox"
-                                            checked={item.isActive}
-                                            onChange={(e) => {
-                                                const updatedEmails = [...emails];
-                                                updatedEmails[index] = {
-                                                    ...updatedEmails[index],
-                                                    isActive: e.target.checked,
-                                                };
-                                                setEmails(updatedEmails);
-                                            }}
-                                        />
-                                    ) : (
-                                        item.isActive ? "Yes" : "No"
-                                    )}
-                                </td>
-
-
-                                <td>
-                                    {isRowEditable(index) ? (
-                                        <div>
-                                            <Button variant="success" onClick={() => handleSaveClick(index)}>Speichern</Button>
-                                            <Button variant="danger" className="ms-1" onClick={handleCancelClick}>Abbrechen</Button>
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <Button variant="dark" onClick={() => handleEditClick(index)}>Bearbeiten</Button>
-                                            <Button variant="danger" className="ms-1" onClick={() => handleRemoveClick(index)}>Löschen</Button>
-                                        </div>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
+                    <div>
+                        <label>Aktive E-Mail auswählen:</label>
+                        <select
+                            value={selectedEmail ? selectedEmail.id : ''}
+                            onChange={(e) => {
+                                const selectedId = e.target.value;
+                                const selectedEmail = emails.find((email) => email.id === parseInt(selectedId));
+                                setSelectedEmail(selectedEmail);
+                            }}
+                        >
+                            {emails.map((email) => (
+                                <option key={email.id} value={email.id}>
+                                    {email.email}
+                                </option>
+                            ))}
+                        </select>
+                        {/*// @ts-ignore*/}
+                        <button onClick={handleSaveClick}>Speichern</button>
+                    </div>
 
                     {isCreateEmailVisible ? (
                         <CreateEmail show={isCreateEmailVisible} onHide={handleOnHide} />
                     ) : (
                         <>
-                            <Button variant="success" onClick={() => setCreateEmailVisible(true)}>Hinzufügen</Button>
+                            <Button variant="success" className="mt-4" onClick={() => setCreateEmailVisible(true)}>Hinzufügen</Button>
                         </>
                     )}
                 </Container>
