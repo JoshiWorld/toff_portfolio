@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Spinner, Table } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import { API_BASE_URL } from '../../config';
 import { Email } from '../../Types/types';
@@ -30,7 +30,7 @@ function AdminKontakt() {
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-                setIsLoading(false); // Ensure isLoading is set to false even on error
+                setIsLoading(false);
             });
     }, [token]);
 
