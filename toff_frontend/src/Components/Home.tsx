@@ -4,6 +4,7 @@ import { Spinner } from 'react-bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faSpotify } from '@fortawesome/free-brands-svg-icons';
+import {API_BASE_URL} from "../config";
 
 function Home() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -11,6 +12,8 @@ function Home() {
     useEffect(() => {
         setIsLoading(false);
     }, []);
+
+    document.documentElement.style.setProperty('--bg-image-url', `url('${API_BASE_URL}/api/uploads/home.jpg')`)
 
     library.add(faSpotify);
     library.add(faInstagram);
