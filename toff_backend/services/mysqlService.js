@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 const { encrypt, decrypt } = require('./cryptoService');
-const { call } = require('express');
+const bcrypt = require('bcrypt');
 
 const pool = mysql.createPool({
     host: process.env.SQL_HOST,
@@ -517,66 +517,130 @@ function createEmail(emailUser, callback) {
         const values = [emailUser.email, encrypt(emailUser.password)];
 
         connection.query(insertQuery, values, (error, results) => {
-            connection.release();
-
             if (error) {
+                connection.release();
                 console.error('Error inserting email entry:', error);
                 callback(error, null);
-            } else {
-                console.log('Email entry inserted successfully');
-                callback(null, results);
+                return;
             }
+
+            const checkActiveEmailQuery = 'SELECT COUNT(*) AS activeEmailCount FROM active_email';
+
+            connection.query(checkActiveEmailQuery, (checkError, checkResults) => {
+                if (checkError) {
+                    connection.release();
+                    console.error('Error checking active_email table:', checkError);
+                    callback(checkError, null);
+                    return;
+                }
+
+                const activeEmailCount = checkResults[0].activeEmailCount;
+
+                if (activeEmailCount === 0) {
+                    const makeActiveQuery = 'INSERT INTO active_email (email_id) VALUES (?)';
+
+                    connection.query(makeActiveQuery, [results.insertId], (makeActiveError, makeActiveResults) => {
+                        connection.release();
+
+                        if (makeActiveError) {
+                            console.error('Error making the email active:', makeActiveError);
+                            callback(makeActiveError, null);
+                        } else {
+                            console.log('Email entry inserted and set as active successfully');
+                            callback(null, results);
+                        }
+                    });
+                } else {
+                    connection.release();
+                    console.log('Email entry inserted successfully, but not set as active');
+                    callback(null, results);
+                }
+            });
         });
     });
 }
 
+
 function updateEmail(id, updatedData, callback) {
     pool.getConnection((err, connection) => {
         if (err) {
-            console.error('Error connecting to database:', err);
+            console.error('Error connecting to the database:', err);
             callback(err, null);
             return;
         }
 
-        const updateQuery = `UPDATE email SET ? WHERE id = ?;`;
         const getActiveEmailQuery = 'SELECT email_id FROM active_email';
 
         connection.query(getActiveEmailQuery, (error, result) => {
-           connection.release();
-
-           if (error) {
-               console.error('Error fetching active email:', error);
-               callback(error, null);
-               return;
-           }
-
-           if(result && result[0]) {
-               const updateActiveQuery = `UPDATE active_email SET ? WHERE email_id = ?;`;
-               const isActive = result[0].email_id === parseInt(id);
-
-               if(updatedData.isActive && isActive) {
-                   callback(error, null);
-               }
-
-               console.log(result[0].email_id === parseInt(id));
-           }
-        });
-
-        return;
-
-        delete updatedData.isActive;
-
-        connection.query(updateQuery, [updatedData, id], (error, results) => {
-            connection.release();
-
             if (error) {
-                console.error('Error updating email entry:', error);
+                connection.release();
+                console.error('Error fetching active email:', error);
                 callback(error, null);
-            } else {
-                console.log('Email entry updated successfully');
-                callback(null, results);
+                return;
             }
+
+            if (result && result[0]) {
+                const isActive = result[0].email_id === parseInt(id);
+
+                if (updatedData.isActive && !isActive) {
+                    const updateActiveQuery = 'UPDATE active_email SET email_id = ? WHERE email_id = ?';
+                    connection.query(updateActiveQuery, [id, id], (error, activeResults) => {
+                        if (error) {
+                            connection.release();
+                            console.error('Error updating active email:', error);
+                            callback(error, null);
+                        } else {
+                            console.log('Email is now marked as active');
+                            updateEmailData(id, updatedData, callback, connection);
+                        }
+                    });
+                } else if (!updatedData.isActive && isActive) {
+                    const deleteActiveEmailQuery = 'DELETE FROM active_email WHERE email_id = ?';
+                    connection.query(deleteActiveEmailQuery, [id], (error, deleteResults) => {
+                        if (error) {
+                            connection.release();
+                            console.error('Error deleting active email:', error);
+                            callback(error, null);
+                        } else {
+                            console.log('Email is no longer active');
+                            updateEmailData(id, updatedData, callback, connection);
+                        }
+                    });
+                } else {
+                    updateEmailData(id, updatedData, callback, connection);
+                }
+            } else if (updatedData.isActive) {
+                const insertActiveEmailQuery = 'INSERT INTO active_email (email_id) VALUES (?)';
+                connection.query(insertActiveEmailQuery, [id], (error, insertResults) => {
+                    if (error) {
+                        connection.release();
+                        console.error('Error adding new active email:', error);
+                        callback(error, null);
+                    } else {
+                        console.log('Email is marked as active');
+                        updateEmailData(id, updatedData, callback, connection);
+                    }
+                });
+            } else {
+                updateEmailData(id, updatedData, callback, connection);
+            }
+
         });
+    });
+}
+
+function updateEmailData(id, updatedEmailData, callback, connection) {
+    const updateQuery = 'UPDATE email SET ? WHERE email_id = ?';
+    delete updatedEmailData.isActive;
+    connection.query(updateQuery, [updatedEmailData, id], (error, results) => {
+        connection.release();
+        if (error) {
+            console.error('Error updating email entry:', error);
+            callback(error, null);
+        } else {
+            console.log('Email entry updated successfully');
+            callback(null, results);
+        }
     });
 }
 
