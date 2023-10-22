@@ -106,3 +106,9 @@ section::after {
         height: 200px;
     }
 }
+
+@media (max-width: 767px) {
+    .tall .form-group {
+        display: block;
+    }
+}
