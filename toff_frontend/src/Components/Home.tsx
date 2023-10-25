@@ -19,7 +19,7 @@ function Home() {
     library.add(faInstagram);
 
     const gradientOverlayStyle: React.CSSProperties = {
-        position: 'absolute',
+        position: 'fixed',
         bottom: 0,
         left: 0,
         width: '100%',
