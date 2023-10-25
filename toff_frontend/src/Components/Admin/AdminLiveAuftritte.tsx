@@ -30,7 +30,7 @@ function AdminLiveAuftritte() {
                 })
                 .catch((error) => console.error('Error fetching data:', error));
         }
-    }, [liveAuftritte.length]);
+    }, [liveAuftritte]);
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
