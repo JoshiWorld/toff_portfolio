@@ -514,6 +514,7 @@ function createEmail(emailUser, callback) {
         }
 
         const insertQuery = 'INSERT INTO email (email, password) VALUES (?, ?)';
+
         const values = [emailUser.email, encrypt(emailUser.password)];
 
         connection.query(insertQuery, values, (error, results) => {
@@ -539,7 +540,7 @@ function createEmail(emailUser, callback) {
                 if (activeEmailCount === 0) {
                     const makeActiveQuery = 'INSERT INTO active_email (email_id) VALUES (?)';
 
-                    connection.query(makeActiveQuery, [results.insertId], (makeActiveError, makeActiveResults) => {
+                    connection.query(makeActiveQuery, [results.insertId], (makeActiveError) => {
                         connection.release();
 
                         if (makeActiveError) {
@@ -584,7 +585,7 @@ function updateEmail(id, updatedData, callback) {
 
                 if (updatedData.isActive && !isActive) {
                     const updateActiveQuery = 'UPDATE active_email SET email_id = ? WHERE email_id = ?';
-                    connection.query(updateActiveQuery, [id, id], (error, activeResults) => {
+                    connection.query(updateActiveQuery, [id, id], (error) => {
                         if (error) {
                             connection.release();
                             console.error('Error updating active email:', error);
@@ -596,7 +597,7 @@ function updateEmail(id, updatedData, callback) {
                     });
                 } else if (!updatedData.isActive && isActive) {
                     const deleteActiveEmailQuery = 'DELETE FROM active_email WHERE email_id = ?';
-                    connection.query(deleteActiveEmailQuery, [id], (error, deleteResults) => {
+                    connection.query(deleteActiveEmailQuery, [id], (error) => {
                         if (error) {
                             connection.release();
                             console.error('Error deleting active email:', error);
@@ -611,7 +612,7 @@ function updateEmail(id, updatedData, callback) {
                 }
             } else if (updatedData.isActive) {
                 const insertActiveEmailQuery = 'INSERT INTO active_email (email_id) VALUES (?)';
-                connection.query(insertActiveEmailQuery, [id], (error, insertResults) => {
+                connection.query(insertActiveEmailQuery, [id], (error) => {
                     if (error) {
                         connection.release();
                         console.error('Error adding new active email:', error);
@@ -682,7 +683,7 @@ function deleteEmail(id, callback) {
 
                 if (emailToDelete.email === activeEmail) {
                     const deleteActiveEmailQuery = 'DELETE FROM active_email';
-                    connection.query(deleteActiveEmailQuery, (deleteActiveEmailError, deleteActiveEmailResult) => {
+                    connection.query(deleteActiveEmailQuery, (deleteActiveEmailError) => {
                         if (deleteActiveEmailError) {
                             connection.release();
                             console.error('Error deleting active email:', deleteActiveEmailError);

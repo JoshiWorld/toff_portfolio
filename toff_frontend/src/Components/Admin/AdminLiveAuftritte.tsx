@@ -20,17 +20,14 @@ function AdminLiveAuftritte() {
     const { token } = useAuth();
 
     useEffect(() => {
-        if (liveAuftritte.length === 0) {
-            // Fetch data from the backend when the component mounts
-            fetch(`${API_BASE_URL}/api/live`) // Replace with your actual API endpoint
-                .then((response) => response.json())
-                .then((data) => {
-                    setLiveAuftritte(data);
-                    setIsLoading(false);
-                })
-                .catch((error) => console.error('Error fetching data:', error));
-        }
-    }, [liveAuftritte.length]);
+        fetch(`${API_BASE_URL}/api/live`)
+            .then((response) => response.json())
+            .then((data) => {
+                setLiveAuftritte(data);
+                setIsLoading(false);
+            })
+            .catch((error) => console.error('Error fetching data:', error));
+    }, [liveAuftritte]);
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
