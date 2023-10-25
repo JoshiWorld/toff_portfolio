@@ -26,21 +26,20 @@ function CreateStats({ show, onHide }) {
     };
 
     const handleAddStats = () => {
-        // Convert formData to a JSON string
+        if(!formData.color) formData.color = '#000000'
         const formDataJSON = JSON.stringify({ stats: formData });
 
         fetch(`${API_BASE_URL}/api/stats/create`, {
             method: 'POST',
             // @ts-ignore
             headers: {
-                'Content-Type': 'application/json', // Set the content type
+                'Content-Type': 'application/json',
                 'authorization': token,
             },
-            body: formDataJSON, // Use the JSON string as the request body
+            body: formDataJSON,
         })
             .then((response) => {
                 if (response.ok) {
-                    // Handle success, e.g., close the modal
                     onHide();
                 } else {
                     // Handle errors
@@ -99,7 +98,7 @@ function CreateStats({ show, onHide }) {
                             <Form.Control
                                 type="color"
                                 name="color"
-                                value={formData.color}
+                                value={formData.color || '#000000'}
                                 onChange={handleChange}
                             />
                         </InputGroup>
