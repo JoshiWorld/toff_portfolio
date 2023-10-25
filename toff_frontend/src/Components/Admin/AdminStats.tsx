@@ -28,7 +28,7 @@ function AdminStats() {
                 setIsLoading(false);
             })
             .catch((error) => console.error('Error fetching data:', error));
-    }, []);
+    }, [stats]);
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
