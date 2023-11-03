@@ -14,6 +14,7 @@ import { AuthProvider, useAuth } from './Utils/AuthProvider';
 import AdminLogin from './Components/Admin/AdminLogin';
 import Logout from './Components/Logout';
 import KontaktSent from './Components/KontaktSent';
+import Songanteile from './Components/Songanteile';
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
                         <Route index element={<Home />} />
                         <Route path="/musik" element={<Musik />} />
                         <Route path="/kontakt" element={<Kontakt />} />
+                        <Route path="/songanteile" element={<Songanteile />} />
                         <Route path="/live" element={<Live />} />
                         <Route path="/impressum" element={<Impressum />} />
                         <Route path="/kontakt/sent" element={<KontaktSent />} />
