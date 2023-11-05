@@ -26,7 +26,7 @@ function AdminDeals() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/deals`);
                 if (!response.ok) {
-                    throw new Error(`Error fetching deals data. Status: ${response.status}`);
+                    console.error('Error fetching deals data. Status: ', response.status);
                 }
                 const data = await response.json();
                 setDeals(data);
@@ -39,7 +39,7 @@ function AdminDeals() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/deals/song`);
                 if (!response.ok) {
-                    throw new Error(`Error fetching song data. Status: ${response.status}`);
+                    console.error('Error fetching song data. Status: ', response.status);
                 }
                 const song = await response.json();
                 setSongSrc(song);
