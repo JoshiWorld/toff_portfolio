@@ -12,13 +12,13 @@ function AdminDeals() {
     const [deals, setDeals] = useState<Deal[]>([]);
     const [songSrc, setSongSrc] = useState<DealSong[]>([]);
     const [editableRow, setEditableRow] = useState<number | null>(null);
-    const [isCreateStatsVisible, setCreateStatsVisible] = useState(false);
+    const [isCreateDealVisible, setCreateDealVisible] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const statsToDisplay = deals.slice(startIndex, endIndex);
+    const dealsToDisplay = deals.slice(startIndex, endIndex);
     const { token } = useAuth();
 
     useEffect(() => {
@@ -139,7 +139,7 @@ function AdminDeals() {
     };
 
     const handleOnHide = () => {
-        setCreateStatsVisible(false);
+        setCreateDealVisible(false);
     }
 
 
@@ -180,14 +180,14 @@ function AdminDeals() {
                         </tr>
                         </thead>
                         <tbody>
-                        {statsToDisplay.map((item, index) => (
-                            <tr key={item.id}>
-                                <td>{item.id}</td>
+                        {dealsToDisplay.map((deal, index) => (
+                            <tr key={deal.id}>
+                                <td>{deal.id}</td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={item.title}
+                                            value={deal.title}
                                             onChange={(e) => {
                                                 const updatedStats = [...deals];
                                                 updatedStats[index] = {
@@ -198,14 +198,14 @@ function AdminDeals() {
                                             }}
                                         />
                                     ) : (
-                                        item.title
+                                        deal.title
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={item.description}
+                                            value={deal.description}
                                             onChange={(e) => {
                                                 const updatedStats = [...deals];
                                                 updatedStats[index] = {
@@ -216,14 +216,14 @@ function AdminDeals() {
                                             }}
                                         />
                                     ) : (
-                                        item.description
+                                        deal.description
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={item.price}
+                                            value={deal.price}
                                             onChange={(e) => {
                                                 const updatedStats = [...deals];
                                                 updatedStats[index] = {
@@ -234,25 +234,25 @@ function AdminDeals() {
                                             }}
                                         />
                                     ) : (
-                                        item.price
+                                        deal.price
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={item.link}
+                                            value={deal.link}
                                             onChange={(e) => {
                                                 const updatedStats = [...deals];
                                                 updatedStats[index] = {
                                                     ...updatedStats[index],
-                                                    link: e.target.value, // Update the color based on the selected color
+                                                    link: e.target.value,
                                                 };
                                                 setDeals(updatedStats);
                                             }}
                                         />
                                     ) : (
-                                        item.link
+                                        deal.link
                                     )}
                                 </td>
 
@@ -289,11 +289,11 @@ function AdminDeals() {
                             ))}
                     </Pagination>
 
-                    {isCreateStatsVisible ? (
-                        <CreateDeal show={isCreateStatsVisible} onHide={handleOnHide} />
+                    {isCreateDealVisible ? (
+                        <CreateDeal show={isCreateDealVisible} onHide={handleOnHide} />
                     ) : (
                         <>
-                            <Button variant="success" onClick={() => setCreateStatsVisible(true)}>Erstellen</Button>
+                            <Button variant="success" onClick={() => setCreateDealVisible(true)}>Erstellen</Button>
                         </>
                     )}
                 </Container>
