@@ -98,7 +98,7 @@ function AdminDeals() {
             },
             body: formDataJSON,
         })
-            .then((response) => {
+            .then(() => {
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -125,7 +125,7 @@ function AdminDeals() {
             },
             body: formDataJSON,
         })
-            .then((response) => {
+            .then(() => {
                 setIsLoading(false);
             })
             .catch((error) => {
