@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Songanteile.css';
 import {API_BASE_URL} from "../config";
 import { Spinner } from 'react-bootstrap';
-import { Deal } from '../Types/types';
+import { Deal, DealSong } from '../Types/types';
 
 // Song-Link: https://open.spotify.com/intl-de/track/3W15m8ARAUSr4oo7nGPI61?si=28fa79c4bbe24456
 // Song-Link: https://open.spotify.com/intl-de/track/4joXMyRKlxq7nY6b5NipY5?si=ad2423f592704d76
@@ -10,13 +10,15 @@ import { Deal } from '../Types/types';
 
 // Biddz-Toff: https://app.biddz.io/musicians/406b36b1-5588-4be1-8cef-b59ddc6368db
 
+
+
 function Songanteile() {
     const [songSrc, setSongSrc] = useState<String>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [deals, setDeals] = useState<Deal[]>([]);
 
-    const decodeTrackURL = (songURL: string) => {
-        const match = songURL.match(/track\/([^?]+)/);
+    const decodeTrackURL = (songURL: DealSong) => {
+        const match = songURL.song_id.match(/track\/([^?]+)/);
 
         if (match && match[1]) {
             return match[1];
@@ -26,18 +28,43 @@ function Songanteile() {
     }
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/api/deals`)
-            .then((response) => response.json())
-            .then((data) => {
+        const fetchDeals = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/deals`);
+                if (!response.ok) {
+                    throw new Error(`Error fetching deals data. Status: ${response.status}`);
+                }
+                const data = await response.json();
                 setDeals(data);
+            } catch (error) {
+                console.error('Error fetching deals data:', error);
+            }
+        };
 
-                fetch(`${API_BASE_URL}/api/deals/song`).then((res) => res.json()).then((song) => {
-                    setSongSrc("https://open.spotify.com/embed/track/" + decodeTrackURL(song[0]) + "?utm_source=generator&theme=0");
-                    setIsLoading(false);
-                }).catch((err) => console.error('Error fetchin data:', err));
+        const fetchSongData = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/deals/song`);
+                if (!response.ok) {
+                    throw new Error(`Error fetching song data. Status: ${response.status}`);
+                }
+                const song = await response.json();
+                if (song.length > 0) {
+                    const trackURL = "https://open.spotify.com/embed/track/" + decodeTrackURL(song[0]) + "?utm_source=generator&theme=0";
+                    setSongSrc(trackURL);
+                }
+            } catch (error) {
+                console.error('Error fetching song data:', error);
+            }
+        };
+
+        Promise.all([fetchDeals(), fetchSongData()])
+            .then(() => {
+                setIsLoading(false);
             })
-            .catch((error) => console.error('Error fetching data:', error));
-    }, [deals.length]);
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
 
     return (
         <div className="charts">

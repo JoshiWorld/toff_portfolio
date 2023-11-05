@@ -5,6 +5,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import AdminStats from './AdminStats';
 import AdminLiveAuftritte from './AdminLiveAuftritte';
 import AdminKontakt from './AdminKontakt';
+import AdminDeals from './AdminDeals';
 
 function AdminHome() {
     const location = useLocation();
@@ -21,6 +22,9 @@ function AdminHome() {
                 break;
             case '/admin/contact':
                 setActiveComponent(<AdminKontakt />);
+                break;
+            case '/admin/deals':
+                setActiveComponent(<AdminDeals />);
                 break;
             default:
                 navigate('/admin/stats'); // Now the navigate function is available
@@ -53,6 +57,14 @@ function AdminHome() {
                             className={`nav-link ${location.pathname === '/admin/contact' ? 'active' : ''}`}
                         >
                             E-Mail
+                        </Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Link
+                            to="/admin/deals"
+                            className={`nav-link ${location.pathname === '/admin/deals' ? 'active' : ''}`}
+                        >
+                            Deals
                         </Link>
                     </Nav.Item>
                 </Nav>
