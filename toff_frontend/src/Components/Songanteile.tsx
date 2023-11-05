@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Songanteile.css';
 import {API_BASE_URL} from "../config";
 import { Spinner } from 'react-bootstrap';
+import { Deal } from '../Types/types';
 
 // Song-Link: https://open.spotify.com/intl-de/track/3W15m8ARAUSr4oo7nGPI61?si=28fa79c4bbe24456
 // Song-Link: https://open.spotify.com/intl-de/track/4joXMyRKlxq7nY6b5NipY5?si=ad2423f592704d76
@@ -12,12 +13,31 @@ import { Spinner } from 'react-bootstrap';
 function Songanteile() {
     const [songSrc, setSongSrc] = useState<String>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [deals, setDeals] = useState<Deal[]>([]);
+
+    const decodeTrackURL = (songURL: string) => {
+        const match = songURL.match(/track\/([^?]+)/);
+
+        if (match && match[1]) {
+            return match[1];
+        }
+
+        return null;
+    }
 
     useEffect(() => {
-        const songUUID = "4joXMyRKlxq7nY6b5NipY5";
-        setSongSrc("https://open.spotify.com/embed/track/" + songUUID + "?utm_source=generator&theme=0");
-        setIsLoading(false);
-    }, []);
+        fetch(`${API_BASE_URL}/api/deals`)
+            .then((response) => response.json())
+            .then((data) => {
+                setDeals(data);
+
+                fetch(`${API_BASE_URL}/api/deals/song`).then((res) => res.json()).then((song) => {
+                    setSongSrc("https://open.spotify.com/embed/track/" + decodeTrackURL(song[0]) + "?utm_source=generator&theme=0");
+                    setIsLoading(false);
+                }).catch((err) => console.error('Error fetchin data:', err));
+            })
+            .catch((error) => console.error('Error fetching data:', error));
+    }, [deals.length]);
 
     return (
         <div className="charts">
@@ -37,13 +57,34 @@ function Songanteile() {
                             <>
                                 <h1>Aktueller Biddz-Deal</h1>
 
-                                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <iframe title="Artist-Pick" style={{ borderRadius: '12px' }}
-                                            // @ts-ignore
-                                            src={songSrc}
-                                            width="100%" height="152" frameBorder="0"
-                                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                                            loading="lazy"></iframe>
+                                <div className="card text-center bg-dark">
+                                    <div className="card-header">
+                                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <iframe title="Artist-Pick" style={{ borderRadius: '12px' }}
+                                                // @ts-ignore
+                                                    src={songSrc}
+                                                    width="100%" height="152" frameBorder="0"
+                                                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                                                    loading="lazy"></iframe>
+                                        </div>
+                                    </div>
+
+                                    <div className="card-body">
+                                        <div className="card-group justify-content-evenly">
+                                            {deals.map((deal, index) => (
+                                                <div className="col-sm-3" id={'deal_' + index} key={index}>
+                                                    <div className="card">
+                                                        <div className="card-body card-content">
+                                                            <h5 className="card-title">{deal.title}</h5>
+                                                            <p className="card-text text-black">{deal.description}</p>
+                                                            <a href={deal.link} className="btn btn-dark">Kaufen</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
                                 </div>
                             </>
                         )}
