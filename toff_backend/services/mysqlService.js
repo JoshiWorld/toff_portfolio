@@ -63,9 +63,7 @@ pool.query(`
     song_id VARCHAR(255) NOT NULL
   );
   
-  IF NOT EXISTS (SELECT * FROM deal_song) THEN
-    INSERT INTO deal_song (song_id) VALUES ('https://open.spotify.com/intl-de/track/4joXMyRKlxq7nY6b5NipY5?si=ad2423f592704d76');
-  END IF;
+  INSERT IGNORE INTO deal_song (song_id) VALUES ('https://open.spotify.com/intl-de/track/4joXMyRKlxq7nY6b5NipY5?si=ad2423f592704d76');
 `, (error) => {
     if (error) {
         console.error('Error creating tables:', error);
