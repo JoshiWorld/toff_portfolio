@@ -28,7 +28,7 @@ function AdminStats() {
                 setIsLoading(false);
             })
             .catch((error) => console.error('Error fetching data:', error));
-    }, [stats]);
+    }, [stats.length]);
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
@@ -118,14 +118,14 @@ function AdminStats() {
                         </tr>
                         </thead>
                         <tbody>
-                        {statsToDisplay.map((item, index) => (
-                            <tr key={item.id}>
-                                <td>{item.id}</td>
+                        {statsToDisplay.map((stat, index) => (
+                            <tr key={stat.id}>
+                                <td>{stat.id}</td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={item.title}
+                                            value={stat.title}
                                             onChange={(e) => {
                                                 const updatedStats = [...stats];
                                                 updatedStats[index] = {
@@ -136,14 +136,14 @@ function AdminStats() {
                                             }}
                                         />
                                     ) : (
-                                        item.title
+                                        stat.title
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={item.value}
+                                            value={stat.value}
                                             onChange={(e) => {
                                                 const updatedStats = [...stats];
                                                 updatedStats[index] = {
@@ -154,14 +154,14 @@ function AdminStats() {
                                             }}
                                         />
                                     ) : (
-                                        item.value
+                                        stat.value
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={item.goal}
+                                            value={stat.goal}
                                             onChange={(e) => {
                                                 const updatedStats = [...stats];
                                                 updatedStats[index] = {
@@ -172,19 +172,19 @@ function AdminStats() {
                                             }}
                                         />
                                     ) : (
-                                        item.goal
+                                        stat.goal
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="color"
-                                            value={item.color}
+                                            value={stat.color}
                                             onChange={(e) => {
                                                 const updatedStats = [...stats];
                                                 updatedStats[index] = {
                                                     ...updatedStats[index],
-                                                    color: e.target.value, // Update the color based on the selected color
+                                                    color: e.target.value,
                                                 };
                                                 setStats(updatedStats);
                                             }}
@@ -194,7 +194,7 @@ function AdminStats() {
                                             style={{
                                                 width: '100%',
                                                 height: '2vw',
-                                                backgroundColor: item.color,
+                                                backgroundColor: stat.color,
                                             }}
                                         ></div>
                                     )}
