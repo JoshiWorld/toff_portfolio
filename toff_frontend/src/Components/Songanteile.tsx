@@ -32,7 +32,8 @@ function Songanteile() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/deals`);
                 if (!response.ok) {
-                    throw new Error(`Error fetching deals data. Status: ${response.status}`);
+                    console.error(`Error fetching deals data. Status: ${response.status}`);
+                    return;
                 }
                 const data = await response.json();
                 setDeals(data);
@@ -45,7 +46,8 @@ function Songanteile() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/deals/song`);
                 if (!response.ok) {
-                    throw new Error(`Error fetching song data. Status: ${response.status}`);
+                    console.error(`Error fetching song data. Status: ${response.status}`);
+                    return;
                 }
                 const song = await response.json();
                 if (song.length > 0) {
@@ -90,7 +92,7 @@ function Songanteile() {
                                             <iframe title="Artist-Pick" style={{ borderRadius: '12px' }}
                                                 // @ts-ignore
                                                     src={songSrc}
-                                                    width="100%" height="152" frameBorder="0"
+                                                    width="100%" height="152"
                                                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                                                     loading="lazy"></iframe>
                                         </div>
@@ -101,9 +103,14 @@ function Songanteile() {
                                             {deals.map((deal, index) => (
                                                 <div className="col-sm-3" id={'deal_' + index} key={index}>
                                                     <div className="card">
-                                                        <div className="card-body card-content">
+                                                        <div className="card-header">
                                                             <h5 className="card-title">{deal.title}</h5>
+                                                        </div>
+                                                        <div className="card-body card-content">
                                                             <p className="card-text text-black">{deal.description}</p>
+                                                        </div>
+                                                        <div className="card-footer">
+                                                            <p className="card-subtitle text-black">Preis: {deal.price} Biddz</p>
                                                             <a href={deal.link} className="btn btn-dark">Kaufen</a>
                                                         </div>
                                                     </div>
