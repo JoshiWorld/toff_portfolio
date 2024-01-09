@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: prod-host
 
     strategy:
       matrix:
@@ -62,7 +62,7 @@ jobs:
         working-directory: toff_backend/
         run: pm2 reload all
   deploy:
-    runs-on: self-hosted
+    runs-on: prod-host
     needs: build
     strategy:
       matrix:
