@@ -57,6 +57,10 @@ jobs:
       - name: Initialize Backend
         working-directory: toff_backend/
         run: npm ci
+
+      - name: Reload PM2
+        working-directory: toff_backend/
+        run: pm2 reload all
   deploy:
     runs-on: prod-host
     needs: build
