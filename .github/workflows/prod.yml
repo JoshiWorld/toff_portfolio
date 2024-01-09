@@ -1,0 +1,92 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI (DEV)
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [ 16.20.0 ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set secrets as environment variables
+        run: |
+          echo "SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> .env
+          echo "SQL_DB=${{ secrets.SQL_DB }}" >> .env
+          echo "SQL_USER=${{ secrets.SQL_USER }}" >> .env
+          echo "MAIL_SMTP_HOST=${{ secrets.MAIL_SMTP_HOST }}" >> .env
+          echo "MAIL_SMTP_PORT=${{ secrets.MAIL_SMTP_PORT }}" >> .env
+          echo "CYPHER_KEY=${{ secrets.CYPHER_KEY }}" >> .env
+        working-directory: toff_backend/
+
+      - name: Create symbolic link for uploads
+        run: ln -s /home/toff/uploads/ /home/toff/actions-runner/_work/toff_portfolio/toff_portfolio/toff_backend/uploads
+
+
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Initialize Frontend
+        working-directory: toff_frontend/
+        run: npm ci
+
+      - name: Build Frontend
+        working-directory: toff_frontend/
+        run: npm run build
+
+      - name: Initialize Backend
+        working-directory: toff_backend/
+        run: npm ci
+
+      - name: Reload PM2
+        working-directory: toff_backend/
+        run: pm2 reload all
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    strategy:
+      matrix:
+        node-version: [16.20.0]
+    steps:
+      - name: Deploying to Test Server
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PROD_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa -p ${{ secrets.PROD_SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        run: |
+          cd ./toff_portfolio/
+          git pull
+          cd ./toff_frontend/
+          npm install
+          npm run build
+          cd ../toff_backend/
+          npm install
+          pm2 reload all
