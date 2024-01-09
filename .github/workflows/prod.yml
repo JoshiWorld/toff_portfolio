@@ -76,14 +76,8 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p ${{ secrets.PROD_SERVER_PORT }} -t rsa ${{ secrets.PROD_SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Debugging
-        run: |
-          pwd
-          ls -la
-
       - name: Deploy
         run: |
-          cd ./toff_portfolio/
           git pull
           cd ./toff_frontend/
           npm install
