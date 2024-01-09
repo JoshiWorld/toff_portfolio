@@ -13,8 +13,7 @@ function Live() {
 
     useEffect(() => {
         if (liveAuftritte.length === 0) {
-            // Fetch data from the backend when the component mounts
-            fetch(`${API_BASE_URL}/api/live`) // Replace with your actual API endpoint
+            fetch(`${API_BASE_URL}/api/live`)
                 .then((response) => response.json())
                 .then((data) => {
                     setLiveAuftritte(data);
@@ -63,6 +62,7 @@ function Live() {
                                                         controls={false}
                                                         loop
                                                         style={imageStyle}
+                                                        playsInline
                                                     />
                                                 ) : (
                                                     <Image

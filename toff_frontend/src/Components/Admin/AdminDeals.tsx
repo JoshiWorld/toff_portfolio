@@ -1,34 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { StatsItem } from '../../Types/types';
+import { Deal, DealSong } from '../../Types/types';
 import Container from 'react-bootstrap/Container';
 import { Table, Button, Spinner } from 'react-bootstrap';
 import { useAuth } from '../../Utils/AuthProvider';
-import CreateStats from './Components/CreateStats';
 import { API_BASE_URL } from '../../config';
 import { Pagination } from 'react-bootstrap';
+import CreateDeal from './Components/CreateDeal';
 
 
-function AdminStats() {
-    const [stats, setStats] = useState<StatsItem[]>([]);
+function AdminDeals() {
+    const [deals, setDeals] = useState<Deal[]>([]);
+    const [songSrc, setSongSrc] = useState<DealSong[]>([]);
     const [editableRow, setEditableRow] = useState<number | null>(null);
-    const [isCreateStatsVisible, setCreateStatsVisible] = useState(false);
+    const [isCreateDealVisible, setCreateDealVisible] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const statsToDisplay = stats.slice(startIndex, endIndex);
+    const dealsToDisplay = deals.slice(startIndex, endIndex);
     const { token } = useAuth();
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/api/stats`)
-            .then((response) => response.json())
-            .then((data) => {
-                setStats(data);
+        const fetchDeals = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/deals`);
+                if (!response.ok) {
+                    console.error('Error fetching deals data. Status: ', response.status);
+                }
+                const data = await response.json();
+                setDeals(data);
+            } catch (error) {
+                console.error('Error fetching deals data:', error);
+            }
+        };
+
+        const fetchSongData = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/deals/song`);
+                if (!response.ok) {
+                    console.error('Error fetching song data. Status: ', response.status);
+                }
+                const song = await response.json();
+                setSongSrc(song);
+            } catch (error) {
+                console.error('Error fetching song data:', error);
+            }
+        };
+
+        Promise.all([fetchDeals(), fetchSongData()])
+            .then(() => {
                 setIsLoading(false);
             })
-            .catch((error) => console.error('Error fetching data:', error));
-    }, [stats.length]);
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
+    }, [deals.length]);
 
     const handleEditClick = (index: number) => {
         setEditableRow(index);
@@ -39,8 +66,8 @@ function AdminStats() {
     };
 
     const handleRemoveClick = (index: number) => {
-        const statToBeRemoved = stats[index];
-        fetch(`${API_BASE_URL}/api/stats/${statToBeRemoved.id}`, {
+        const statToBeRemoved = deals[index];
+        fetch(`${API_BASE_URL}/api/deals/${statToBeRemoved.id}`, {
             method: 'DELETE',
             // @ts-ignore
             headers: {
@@ -57,11 +84,12 @@ function AdminStats() {
     };
 
     const handleSaveClick = (index: number) => {
-        const updatedStats = [...stats];
+        const updatedStats = [...deals];
         const updatedItem = { ...updatedStats[index] };
-        const formDataJSON = JSON.stringify({ stats: updatedItem });
+        const formDataJSON = JSON.stringify({ deal: updatedItem });
+        setIsLoading(true);
 
-        fetch(`${API_BASE_URL}/api/stats/${updatedItem.id}`, {
+        fetch(`${API_BASE_URL}/api/deals/${updatedItem.id}`, {
             method: 'PUT',
             // @ts-ignore
             headers: {
@@ -70,13 +98,8 @@ function AdminStats() {
             },
             body: formDataJSON,
         })
-            .then((response) => {
-                if (response.ok) {
-                    // Handle success
-                    // You may want to update the state or perform other actions
-                } else {
-                    // Handle errors
-                }
+            .then(() => {
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.error('Error sending data to the backend:', error);
@@ -84,8 +107,30 @@ function AdminStats() {
 
         // Update the state if needed
         updatedStats[index] = updatedItem;
-        setStats(updatedStats);
+        setDeals(updatedStats);
         setEditableRow(null);
+    };
+
+    const handleSaveSong = () => {
+        const updatedItem = { ...songSrc[0] };
+        const formDataJSON = JSON.stringify({ deal_song: updatedItem });
+        setIsLoading(true);
+
+        fetch(`${API_BASE_URL}/api/deals/song/${updatedItem.id}`, {
+            method: 'PUT',
+            // @ts-ignore
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': token,
+            },
+            body: formDataJSON,
+        })
+            .then(() => {
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error sending data to the backend:', error);
+            });
     };
 
 
@@ -94,7 +139,7 @@ function AdminStats() {
     };
 
     const handleOnHide = () => {
-        setCreateStatsVisible(false);
+        setCreateDealVisible(false);
     }
 
 
@@ -106,97 +151,108 @@ function AdminStats() {
                 <Spinner animation="grow" />
             ) : (
                 <Container>
+                    <div className="mb-5">
+                        <h4>Aktueller Song als Deal:</h4>
+                        <input
+                            type="text"
+                            value={songSrc ? songSrc[0].song_id : ""}
+                            onChange={(e) => {
+                                const updatedDealSong = [...songSrc];
+                                updatedDealSong[0] = {
+                                    ...updatedDealSong[0],
+                                    song_id: e.target.value,
+                                };
+                                setSongSrc(updatedDealSong);
+                            }}
+                        />
+                        <Button className="m-lg-1" variant="success" onClick={handleSaveSong}>Speichern</Button>
+                    </div>
+
                     <Table responsive="xl">
                         <thead>
                         <tr>
                             <th>#</th>
                             <th>Titel</th>
-                            <th>Wert</th>
-                            <th>Ziel</th>
-                            <th>Farbe</th>
+                            <th>Beschreibung</th>
+                            <th>Preis</th>
+                            <th>Link</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
-                        {statsToDisplay.map((stat, index) => (
-                            <tr key={stat.id}>
-                                <td>{stat.id}</td>
+                        {dealsToDisplay.map((deal, index) => (
+                            <tr key={deal.id}>
+                                <td>{deal.id}</td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={stat.title}
+                                            value={deal.title}
                                             onChange={(e) => {
-                                                const updatedStats = [...stats];
+                                                const updatedStats = [...deals];
                                                 updatedStats[index] = {
                                                     ...updatedStats[index],
                                                     title: e.target.value,
                                                 };
-                                                setStats(updatedStats);
+                                                setDeals(updatedStats);
                                             }}
                                         />
                                     ) : (
-                                        stat.title
+                                        deal.title
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={stat.value}
+                                            value={deal.description}
                                             onChange={(e) => {
-                                                const updatedStats = [...stats];
+                                                const updatedStats = [...deals];
                                                 updatedStats[index] = {
                                                     ...updatedStats[index],
-                                                    value: +e.target.value,
+                                                    description: e.target.value,
                                                 };
-                                                setStats(updatedStats);
+                                                setDeals(updatedStats);
                                             }}
                                         />
                                     ) : (
-                                        stat.value
+                                        deal.description
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
                                             type="text"
-                                            value={stat.goal}
+                                            value={deal.price}
                                             onChange={(e) => {
-                                                const updatedStats = [...stats];
+                                                const updatedStats = [...deals];
                                                 updatedStats[index] = {
                                                     ...updatedStats[index],
-                                                    goal: +e.target.value,
+                                                    price: +e.target.value,
                                                 };
-                                                setStats(updatedStats);
+                                                setDeals(updatedStats);
                                             }}
                                         />
                                     ) : (
-                                        stat.goal
+                                        deal.price
                                     )}
                                 </td>
                                 <td>
                                     {isRowEditable(index) ? (
                                         <input
-                                            type="color"
-                                            value={stat.color}
+                                            type="text"
+                                            value={deal.link}
                                             onChange={(e) => {
-                                                const updatedStats = [...stats];
+                                                const updatedStats = [...deals];
                                                 updatedStats[index] = {
                                                     ...updatedStats[index],
-                                                    color: e.target.value,
+                                                    link: e.target.value,
                                                 };
-                                                setStats(updatedStats);
+                                                setDeals(updatedStats);
                                             }}
                                         />
                                     ) : (
-                                        <div
-                                            style={{
-                                                width: '100%',
-                                                height: '2vw',
-                                                backgroundColor: stat.color,
-                                            }}
-                                        ></div>
+                                        deal.link
                                     )}
                                 </td>
 
@@ -220,7 +276,7 @@ function AdminStats() {
                     </Table>
 
                     <Pagination>
-                        {Array(Math.ceil(stats.length / itemsPerPage))
+                        {Array(Math.ceil(deals.length / itemsPerPage))
                             .fill(null)
                             .map((_, page) => (
                                 <Pagination.Item
@@ -233,11 +289,11 @@ function AdminStats() {
                             ))}
                     </Pagination>
 
-                    {isCreateStatsVisible ? (
-                        <CreateStats show={isCreateStatsVisible} onHide={handleOnHide} />
+                    {isCreateDealVisible ? (
+                        <CreateDeal show={isCreateDealVisible} onHide={handleOnHide} />
                     ) : (
                         <>
-                            <Button variant="success" onClick={() => setCreateStatsVisible(true)}>Erstellen</Button>
+                            <Button variant="success" onClick={() => setCreateDealVisible(true)}>Erstellen</Button>
                         </>
                     )}
                 </Container>
@@ -246,4 +302,4 @@ function AdminStats() {
     );
 }
 
-export default AdminStats;
+export default AdminDeals;

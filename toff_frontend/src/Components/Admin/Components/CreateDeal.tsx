@@ -7,12 +7,12 @@ import { useAuth } from '../../../Utils/AuthProvider';
 import { API_BASE_URL } from '../../../config';
 
 // @ts-ignore
-function CreateStats({ show, onHide }) {
+function CreateDeal({ show, onHide }) {
     const [formData, setFormData] = useState({
         title: '',
-        value: '',
-        goal: '',
-        color: '',
+        description: '',
+        price: '',
+        link: '',
     });
     const {token} = useAuth();
 
@@ -26,10 +26,9 @@ function CreateStats({ show, onHide }) {
     };
 
     const handleAddStats = () => {
-        if(!formData.color) formData.color = '#000000'
-        const formDataJSON = JSON.stringify({ stats: formData });
+        const formDataJSON = JSON.stringify({ deal: formData });
 
-        fetch(`${API_BASE_URL}/api/stats/create`, {
+        fetch(`${API_BASE_URL}/api/deals/create`, {
             method: 'POST',
             // @ts-ignore
             headers: {
@@ -54,7 +53,7 @@ function CreateStats({ show, onHide }) {
     return (
         <Modal show={show} onHide={onHide} backdrop="static" keyboard={false}>
             <Modal.Header closeButton>
-                <Modal.Title>Neue Stats hinzufügen</Modal.Title>
+                <Modal.Title>Neuen Deal hinzufügen</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -65,41 +64,43 @@ function CreateStats({ show, onHide }) {
                             name="title"
                             value={formData.title}
                             onChange={handleChange}
-                            placeholder="Spotify"
+                            placeholder="Gold-Deal"
                         />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="createStatsForm.Value">
-                        <Form.Label>Wert</Form.Label>
+                        <Form.Label>Beschreibung</Form.Label>
                         <InputGroup className="mb-3">
                             <Form.Control
-                                type="number"
-                                name="value"
-                                value={formData.value}
+                                as="textarea"
+                                name="description"
+                                // @ts-ignore
+                                value={formData.description}
                                 onChange={handleChange}
-                                placeholder="10000"
+                                placeholder="Neue Shirts beim Kauf dazu."
                             />
                         </InputGroup>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="createStatsForm.Goal">
-                        <Form.Label>Ziel</Form.Label>
+                        <Form.Label>Preis</Form.Label>
                         <InputGroup className="mb-3">
                             <Form.Control
                                 type="number"
-                                name="goal"
-                                value={formData.goal}
+                                name="price"
+                                value={formData.price}
                                 onChange={handleChange}
-                                placeholder="100000"
+                                placeholder="100"
                             />
                         </InputGroup>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="createStatsForm.Color">
-                        <Form.Label>Farbe</Form.Label>
+                        <Form.Label>Link</Form.Label>
                         <InputGroup className="mb-3">
                             <Form.Control
-                                type="color"
-                                name="color"
-                                value={formData.color || '#000000'}
+                                type="text"
+                                name="link"
+                                value={formData.link}
                                 onChange={handleChange}
+                                placeholder="https://app.biddz.io/"
                             />
                         </InputGroup>
                     </Form.Group>
@@ -117,4 +118,4 @@ function CreateStats({ show, onHide }) {
     );
 }
 
-export default CreateStats;
+export default CreateDeal;

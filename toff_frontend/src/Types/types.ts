@@ -26,3 +26,16 @@ export interface Email {
     password: string;
     isActive: boolean;
 }
+
+export interface Deal {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    link: string;
+}
+
+export interface DealSong {
+    id: number;
+    song_id: string;
+}
