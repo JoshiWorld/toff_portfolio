@@ -38,6 +38,7 @@ const corsOptions = {
     'http://localhost:3000',
     'http://localhost:3001',
     'https://toff.brokoly.de',
+    'https://toff-musik.de',
   ],
 };
 
