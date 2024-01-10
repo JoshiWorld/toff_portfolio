@@ -693,7 +693,7 @@ function deleteEmail(id, callback) {
                     return;
                 }
 
-                const activeEmail = activeEmailResult[0]?.email || '';
+                const activeEmail = (activeEmailResult[0] && activeEmailResult[0].email) || '';
 
                 if (emailToDelete.email === activeEmail) {
                     const deleteActiveEmailQuery = 'DELETE FROM active_email';
