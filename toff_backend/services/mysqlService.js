@@ -760,7 +760,7 @@ function getEmails(callback) {
                     return;
                 }
 
-                const activeEmail = activeEmailResults[0]?.email_id || '';
+                const activeEmail = (activeEmailResult[0] && activeEmailResult[0].email) || '';
 
                 results.forEach(row => {
                     let existingEmail = {
