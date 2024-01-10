@@ -1,6 +1,7 @@
 const mysql = require('mysql2');
 const { encrypt, decrypt } = require('./cryptoService');
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 const pool = mysql.createPool({
     host: process.env.SQL_HOST,
