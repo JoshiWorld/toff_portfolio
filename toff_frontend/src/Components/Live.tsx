@@ -65,12 +65,21 @@ function Live() {
                                                         playsInline
                                                     />
                                                 ) : (
-                                                    <Image
-                                                        src={`${API_BASE_URL}/api/${item.imageSource}`}
-                                                        alt="Livesource"
-                                                        className="img-fluid"
+                                                    <video
+                                                        src={`${API_BASE_URL}/api/live.mp4`}
+                                                        autoPlay
+                                                        muted
+                                                        controls={false}
+                                                        loop
                                                         style={imageStyle}
+                                                        playsInline
                                                     />
+                                                    // <Image
+                                                    //     src={`${API_BASE_URL}/api/${item.imageSource}`}
+                                                    //     alt="Livesource"
+                                                    //     className="img-fluid"
+                                                    //     style={imageStyle}
+                                                    // />
                                                 )}
                                             </div>
 
