@@ -66,7 +66,7 @@ function Live() {
                                                     />
                                                 ) : (
                                                     <video
-                                                        src={`${API_BASE_URL}/api/live.mp4`}
+                                                        src={`${API_BASE_URL}/api/uploads/live.mp4`}
                                                         autoPlay
                                                         muted
                                                         controls={false}
