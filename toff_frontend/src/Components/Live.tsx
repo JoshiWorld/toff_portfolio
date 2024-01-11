@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BlogEntryItem } from '../Types/types';
 import Carousel from 'react-bootstrap/Carousel';
-import {Image, Spinner} from 'react-bootstrap';
+import {Spinner} from 'react-bootstrap';
 import { API_BASE_URL } from '../config';
 import LiveEmptyPage from "./Live/LiveEmptyPage";
 import LiveShowInfo from './Live/LiveShowInfo';
