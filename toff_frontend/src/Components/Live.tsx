@@ -1,101 +1,111 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { BlogEntryItem } from '../Types/types';
-import Carousel from 'react-bootstrap/Carousel';
-import {Spinner} from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { API_BASE_URL } from '../config';
-import LiveEmptyPage from "./Live/LiveEmptyPage";
-import LiveShowInfo from './Live/LiveShowInfo';
+import LiveEmptyPage from './Live/LiveEmptyPage';
+
+const LiveArticle = lazy(() => import('./Live/LiveArticle'));
 
 function Live() {
     const [liveAuftritte, setLiveAuftritte] = useState<BlogEntryItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [showInfo, setShowInfo] = useState(new Array(liveAuftritte.length).fill(false));
+    const [page, setPage] = useState<number>(1);
+
+    const loadPageData = (pageNumber: number) => {
+        fetch(`${API_BASE_URL}/api/live?page=${pageNumber}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.length === 0) {
+                    setIsLoading(false);
+                    return;
+                }
+
+                const uniqueLiveAuftritte = liveAuftritte.filter((existingItem) => {
+                    return !data.some((newItem: BlogEntryItem) => existingItem.id === newItem.id);
+                });
+
+                const combinedData = [...uniqueLiveAuftritte, ...data];
+
+                setLiveAuftritte(combinedData);
+                setPage((prevPage) => prevPage + 1);
+                setIsLoading(false);
+            })
+            .catch((error) => console.error('Error fetching data:', error));
+    };
 
     useEffect(() => {
-        if (liveAuftritte.length === 0) {
-            fetch(`${API_BASE_URL}/api/live`)
-                .then((response) => response.json())
-                .then((data) => {
-                    setLiveAuftritte(data);
-                    setIsLoading(false);
-                })
-                .catch((error) => console.error('Error fetching data:', error));
-        }
-    }, [liveAuftritte.length]);
+        // Load initial data for page 1
+        loadPageData(1);
+    }, []);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const windowHeight =
+                'innerHeight' in window
+                    ? window.innerHeight
+                    : document.documentElement.offsetHeight;
+            const body = document.body;
+            const html = document.documentElement;
+            const docHeight = Math.max(
+                body.scrollHeight,
+                body.offsetHeight,
+                html.clientHeight,
+                html.scrollHeight,
+                html.offsetHeight
+            );
+
+            const windowBottom = windowHeight + window.pageYOffset;
+            if (windowBottom >= docHeight) {
+                setIsLoading(true);
+                loadPageData(page-1);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [isLoading, page]);
 
     const imageStyle: React.CSSProperties = {
         zIndex: 1,
-        width: "100%",
-        height: "50vw",
-        objectFit: "cover",
-        objectPosition: "center",
-    };
-
-    const handleOnHide = (index: number) => {
-        const updatedShowInfo = [...showInfo];
-        updatedShowInfo[index] = false;
-        setShowInfo(updatedShowInfo);
+        width: '100%',
+        height: '50vw',
+        objectFit: 'cover',
+        objectPosition: 'center',
     };
 
     return (
         <div>
             <div>
-                {isLoading ? (
-                    <Spinner animation="grow" />
-                ) : (
-                    <>
-                        {liveAuftritte.length !== 0 ? (
-                            <Carousel>
-                                {liveAuftritte.map((item, index) => (
-                                    <Carousel.Item key={index}>
-                                        <div>
-                                            <div onClick={() => {
-                                                const updatedShowInfo = [...showInfo];
-                                                updatedShowInfo[index] = true;
-                                                setShowInfo(updatedShowInfo);
-                                            }}>
-                                                {item.isVideo ? (
-                                                    <video
-                                                        src={`${API_BASE_URL}/api/${item.mediaSource}`}
-                                                        autoPlay
-                                                        muted
-                                                        controls={false}
-                                                        loop
-                                                        style={imageStyle}
-                                                        playsInline
-                                                    />
-                                                ) : (
-                                                    <video
-                                                        src={`${API_BASE_URL}/api/uploads/live.mp4`}
-                                                        autoPlay
-                                                        muted
-                                                        controls={false}
-                                                        loop
-                                                        style={imageStyle}
-                                                        playsInline
-                                                    />
-                                                    // <Image
-                                                    //     src={`${API_BASE_URL}/api/${item.imageSource}`}
-                                                    //     alt="Livesource"
-                                                    //     className="img-fluid"
-                                                    //     style={imageStyle}
-                                                    // />
-                                                )}
-                                            </div>
+                <>
+                    <video
+                        src={`${API_BASE_URL}/api/uploads/live.mp4`}
+                        controls={true}
+                        loop
+                        style={imageStyle}
+                        playsInline
+                    />
 
-                                            {showInfo[index] && (
-                                                <LiveShowInfo show={showInfo[index]} onHide={() => handleOnHide(index)} item={item} />
-                                            )}
-                                        </div>
-                                    </Carousel.Item>
-
-                                ))}
-                            </Carousel>
-                        ) : (
-                            <LiveEmptyPage />
-                        )}
-                    </>
-                )}
+                    {liveAuftritte.length !== 0 ? (
+                        <div className="container mt-4 mb-4">
+                            {liveAuftritte.map((item, index) => (
+                                <div className="row" key={index}>
+                                    <div className="col-md-8 offset-md-2">
+                                        <Suspense fallback={<Spinner animation="grow" />}>
+                                            <LiveArticle
+                                                key={index}
+                                                title={item.title}
+                                                description={item.description}
+                                                ticket={item.ticketLink}
+                                            />
+                                        </Suspense>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <LiveEmptyPage />
+                    )}
+                </>
             </div>
         </div>
     );

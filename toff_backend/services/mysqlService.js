@@ -187,7 +187,7 @@ function getLiveBlogs(callback) {
         const query = 'SELECT * FROM live';
 
         connection.query(query, (error, results) => {
-            connection.release(); // Release the connection back to the pool
+            connection.release();
 
             if (error) {
                 console.error('Error executing query:', error);
@@ -200,7 +200,6 @@ function getLiveBlogs(callback) {
             results.forEach(row => {
                 const liveId = row.id;
 
-                // Check if the order already exists in the orders array
                 let existingBlog = liveblogs.find(blog => blog.id === liveId);
 
                 if (!existingBlog) {
@@ -343,6 +342,23 @@ function deleteLiveBlog(id, callback) {
                 console.log('Live entry deleted successfully');
                 callback(null, results);
             }
+        });
+    });
+}
+
+function getLiveBlogsPaginated(itemsPerPage, page, callback) {
+    pool.getConnection((err, connection) => {
+        const offset = (page - 1) * itemsPerPage;
+        const query = `SELECT * FROM live ORDER BY id DESC LIMIT ${offset}, ${itemsPerPage}`;
+
+        connection.query(query, (error, results) => {
+            connection.release();
+            if (error) {
+                callback(error, null);
+                return;
+            }
+
+            callback(null, results);
         });
     });
 }
@@ -1013,6 +1029,7 @@ module.exports = {
     updateLiveBlog,
     deleteLiveBlog,
     getLiveBlogById,
+    getLiveBlogsPaginated,
 
     // STATS
     getStats,
