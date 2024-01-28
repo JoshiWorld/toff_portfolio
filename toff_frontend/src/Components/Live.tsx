@@ -36,7 +36,7 @@ function Live() {
     useEffect(() => {
         // Load initial data for page 1
         loadPageData(1);
-    }, []);
+    }, [loadPageData]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -63,7 +63,7 @@ function Live() {
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [isLoading, page]);
+    }, [isLoading, page, loadPageData]);
 
     const imageStyle: React.CSSProperties = {
         zIndex: 1,
