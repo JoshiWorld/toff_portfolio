@@ -6,7 +6,10 @@ const { upload, deleteFile } = require('../services/fileService');
 
 /* GET users listing. */
 router.get('/', function(req, res) {
-    mysqlService.getLiveBlogs((error, results) => {
+    const page = req.query.page || 1;
+    const itemsPerPage = 5;
+
+    mysqlService.getLiveBlogsPaginated(itemsPerPage, page, (error, results) => {
         if (error) {
             res.status(500).json({ message: 'Internal server error', error: error });
             return;
