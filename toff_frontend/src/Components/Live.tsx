@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useState, lazy, Suspense, useCallback } from 'react';
 import { BlogEntryItem } from '../Types/types';
 import { Spinner } from 'react-bootstrap';
 import { API_BASE_URL } from '../config';
@@ -11,7 +11,7 @@ function Live() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
 
-    const loadPageData = (pageNumber: number) => {
+    const loadPageData = useCallback((pageNumber: number) => {
         fetch(`${API_BASE_URL}/api/live?page=${pageNumber}`)
             .then((response) => response.json())
             .then((data) => {
@@ -20,21 +20,21 @@ function Live() {
                     return;
                 }
 
-                const uniqueLiveAuftritte = liveAuftritte.filter((existingItem) => {
-                    return !data.some((newItem: BlogEntryItem) => existingItem.id === newItem.id);
+                const uniqueData = data.filter((newItem: BlogEntryItem) => {
+                    const isDuplicate = liveAuftritte.some((existingItem) => existingItem.id === newItem.id);
+                    console.log(`Checking item with id ${newItem.id}. Is duplicate: ${isDuplicate}`);
+                    return !isDuplicate;
                 });
 
-                const combinedData = [...uniqueLiveAuftritte, ...data];
+                setLiveAuftritte((prevLiveAuftritte) => [...prevLiveAuftritte, ...uniqueData]);
 
-                setLiveAuftritte(combinedData);
                 setPage((prevPage) => prevPage + 1);
                 setIsLoading(false);
             })
             .catch((error) => console.error('Error fetching data:', error));
-    };
+    }, [liveAuftritte]);
 
     useEffect(() => {
-        // Load initial data for page 1
         loadPageData(1);
     }, [loadPageData]);
 
